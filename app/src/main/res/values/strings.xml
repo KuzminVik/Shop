@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ShopCatalog</string>
+    <string name="tv_name_default">tv_name</string>
+    <string name="tv_desc_default">tv_desc</string>
+    <string name="tv_price_default">tv_price</string>
+    <string name="btn_txt_default">В избранное</string>
+    <string name="img_desc">Основная картинка товара</string>
 </resources>

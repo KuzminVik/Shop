@@ -1,8 +1,8 @@
-package ru.geekbrains.shopcatalog
+package ru.geekbrains.shopcatalog.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import ru.geekbrains.shopcatalog.ui.main.MainFragment
+import ru.geekbrains.shopcatalog.R
 
 class MainActivity : AppCompatActivity() {
 
@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_activity)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, MainFragment.newInstance())
+                    .replace(R.id.container, ProductFragment.newInstance())
                     .commitNow()
         }
     }
