@@ -16,7 +16,7 @@ class MainViewModel(private val liveDataToObserve: MutableLiveData<AppState> = M
     private fun getDataFromLocalSource() {
         liveDataToObserve.value = AppState.Loading
         Thread {
-            sleep(3000)
+            sleep(2000)
             liveDataToObserve.postValue(AppState.Success(RepositoryImpl().getProductFromLocalStorage()))
         }.start()
     }

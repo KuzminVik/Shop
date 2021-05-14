@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
+import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.viewmodel.AppState
 import ru.geekbrains.shopcatalog.databinding.ProductFragmentBinding
 import ru.geekbrains.shopcatalog.model.Product
@@ -30,7 +31,6 @@ class ProductFragment : Fragment() {
         _binding = ProductFragmentBinding.inflate(inflater, container, false)
         val view = binding.root
         return view
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -53,7 +53,7 @@ class ProductFragment : Fragment() {
                 val productData = appState.productData
                 binding.loadingLayout.visibility = View.GONE
                 setData(productData)
-                Snackbar.make(binding.mainView, "Success", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.mainView, "Загрузка данных завершена", Snackbar.LENGTH_LONG).show()
             }
             is AppState.Loading -> {
                 binding.loadingLayout.visibility = View.VISIBLE
@@ -68,10 +68,11 @@ class ProductFragment : Fragment() {
         }
     }
 
-    private fun setData(productData : Product){
-        binding.tvName.text = productData.name
-        binding.tvDesc.text = productData.description
-        binding.tvPrice.text = productData.salePrices.toString()
+    private fun setData(productData : List<Product>){
+        binding.tvName.text = productData[0].name
+        binding.tvDesc.text = productData[0].description
+        binding.tvPrice.text = productData[0].salePrices.toString()
+        binding.ivFirst.setImageResource(R.drawable.test_mini)
 //        binding.btnAdd.setOnClickListener { context?.let { it1 -> viewModel.userClicked(it1) } }
         binding.btnAdd.setOnClickListener(object : View.OnClickListener{
             override fun onClick(v: View?) {

@@ -10,7 +10,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="settings">Settings</string>
-    <string name="main">Main</string>
+    <string name="main">Товар тестовый</string>
     <string name="favorite">Favorite</string>
-    <string name="fragment_navigation">Fragment_navigation</string>
+    <string name="fragment_navigation">Меню</string>
 </resources>

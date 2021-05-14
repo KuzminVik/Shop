@@ -53,7 +53,9 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
             R.id.action_main -> {
-                // открыть фрагмент в контейнере
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.container, ProductFragment.newInstance())
+                        .commitNow()
                 return true
             }
             R.id.action_favorite -> {

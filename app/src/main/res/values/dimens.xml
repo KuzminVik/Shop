@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="height_img_first">100dp</dimen>
-    <dimen name="width_img_first">100dp</dimen>
+
+    <dimen name="width_img_first">120dp</dimen>
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_normal">16dp</dimen>
 
@@ -11,5 +11,7 @@
     <dimen name="btn_textsize">10sp</dimen>
     <dimen name="title_textsize">20sp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="margin_big">32dp</dimen>
+    <dimen name="margin_top_contentLayout">60dp</dimen>
 
 </resources>
