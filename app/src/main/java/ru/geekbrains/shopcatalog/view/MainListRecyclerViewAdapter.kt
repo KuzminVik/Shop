@@ -8,15 +8,18 @@ import android.widget.TextView
 import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.model.Product
 
-import ru.geekbrains.shopcatalog.view.dummy.DummyContent.DummyItem
+class MainListRecyclerViewAdapter() : RecyclerView.Adapter<MainListRecyclerViewAdapter.ViewHolder>() {
 
-class MainListRecyclerViewAdapter(
-    private val values: List<Product>
-) : RecyclerView.Adapter<MainListRecyclerViewAdapter.ViewHolder>() {
+    private var values: List<Product> = listOf()
+
+    public fun setValues(v: List<Product>){
+        values = v
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.fragment_main_list, parent, false)
+            .inflate(R.layout.fragment_main_recycler_item, parent, false)
         return ViewHolder(view)
     }
 

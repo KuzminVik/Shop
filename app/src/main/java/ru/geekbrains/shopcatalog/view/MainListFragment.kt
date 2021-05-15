@@ -11,18 +11,18 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
-import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.databinding.FragmentMainListBinding
-import ru.geekbrains.shopcatalog.databinding.ProductFragmentBinding
-import ru.geekbrains.shopcatalog.model.Product
+import ru.geekbrains.shopcatalog.databinding.FragmentMainRecyclerItemBinding
 import ru.geekbrains.shopcatalog.viewmodel.AppState
 import ru.geekbrains.shopcatalog.viewmodel.MainViewModel
 
 class MainListFragment : Fragment() {
     private var _binding: FragmentMainListBinding? = null
     private val binding get() = _binding!!
-    private var columnCount = 1
+    private var columnCount = 2
     private lateinit var viewModel: MainViewModel
+    private val adapter = MainListRecyclerViewAdapter()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,9 +34,6 @@ class MainListFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
-        viewModel.getProduct()
     }
 
     override fun onCreateView(
@@ -45,6 +42,12 @@ class MainListFragment : Fragment() {
     ): View? {
         _binding = FragmentMainListBinding.inflate(inflater, container, false)
         val view = binding.root
+        binding.list.adapter = adapter
+
+
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
+        viewModel.getProduct()
 
         // Set the adapter
         if (view is RecyclerView) {
@@ -53,8 +56,9 @@ class MainListFragment : Fragment() {
                     columnCount <= 1 -> LinearLayoutManager(view.getContext())
                     else -> GridLayoutManager(view.getContext(), columnCount)
                 }
+                var myAdapter = MainListRecyclerViewAdapter()
+                adapter = myAdapter
 
-                adapter = MainListRecyclerViewAdapter(app)
             }
         }
         return view
@@ -77,20 +81,18 @@ class MainListFragment : Fragment() {
         when (appState) {
             is AppState.Success -> {
                 val productData = appState.productData
-                RecyclerView.adap
-//                binding.loadingLayout.visibility = View.GONE
-//                setData(productData)
-//                Snackbar.make(binding.mainView, "Загрузка данных завершена", Snackbar.LENGTH_LONG).show()
+                binding.listFragmentLoadingLayout.visibility = View.GONE
+                adapter.setValues(productData)
             }
             is AppState.Loading -> {
-//                binding.loadingLayout.visibility = View.VISIBLE
+                binding.listFragmentLoadingLayout.visibility = View.VISIBLE
             }
             is AppState.Error -> {
-//                binding.loadingLayout.visibility = View.GONE
-//                Snackbar
-//                        .make(binding.mainView, "Error", Snackbar.LENGTH_INDEFINITE)
-//                        .setAction("Reload") { viewModel.getProduct() }
-//                        .show()
+                binding.listFragmentLoadingLayout.visibility = View.GONE
+                Snackbar
+                        .make(binding.mainView, "Error", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("Reload") { viewModel.getProduct() }
+                        .show()
             }
         }
     }
