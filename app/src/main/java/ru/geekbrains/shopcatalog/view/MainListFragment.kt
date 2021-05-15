@@ -44,7 +44,6 @@ class MainListFragment : Fragment() {
         val view = binding.root
         binding.list.adapter = adapter
 
-
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
         viewModel.getProduct()
