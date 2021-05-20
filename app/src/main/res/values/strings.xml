@@ -13,4 +13,6 @@
     <string name="main">Товар тестовый</string>
     <string name="favorite">Favorite</string>
     <string name="fragment_navigation">Меню</string>
+    <string name="new_product">Новинки</string>
+    <string name="all_product">Все товары</string>
 </resources>

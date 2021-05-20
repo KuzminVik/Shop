@@ -8,7 +8,7 @@ import android.widget.TextView
 import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.model.Product
 
-class MainListRecyclerViewAdapter() : RecyclerView.Adapter<MainListRecyclerViewAdapter.ViewHolder>() {
+class MainListRecyclerViewAdapter(private var onItemViewClickListener: MainListFragment.OnItemViewClickListener?) : RecyclerView.Adapter<MainListRecyclerViewAdapter.ViewHolder>() {
 
     private var values: List<Product> = listOf()
 
@@ -17,27 +17,31 @@ class MainListRecyclerViewAdapter() : RecyclerView.Adapter<MainListRecyclerViewA
         notifyDataSetChanged()
     }
 
+//    fun removeListener() {
+//        onItemViewClickListener = null
+//    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.fragment_main_recycler_item, parent, false)
+            .inflate(R.layout.main_recycler_item, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = values[position]
-        holder.titleView.text = item.name
-        holder.contentView.text = item.salePrices.toString()
+        holder.bind(values[position])
     }
 
     override fun getItemCount(): Int = values.size
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 //        val image: ImageView = view.findViewById(R.id.item_image)
-        val titleView: TextView = view.findViewById(R.id.item_title)
-        val contentView: TextView = view.findViewById(R.id.item_price)
-
-        override fun toString(): String {
-            return super.toString() + " '" + contentView.text + "'"
+        fun bind(product: Product){
+            itemView.findViewById<TextView>(R.id.item_title).text = product.name
+            itemView.findViewById<TextView>(R.id.item_price).text = product.salePrices.toString()
+            itemView.setOnClickListener {
+            onItemViewClickListener?.onItemViewClick(product)
+            }
         }
+
     }
 }

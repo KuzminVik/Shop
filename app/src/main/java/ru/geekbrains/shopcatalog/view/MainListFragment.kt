@@ -11,8 +11,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
+import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.databinding.FragmentMainListBinding
-import ru.geekbrains.shopcatalog.databinding.FragmentMainRecyclerItemBinding
+import ru.geekbrains.shopcatalog.model.Product
 import ru.geekbrains.shopcatalog.viewmodel.AppState
 import ru.geekbrains.shopcatalog.viewmodel.MainViewModel
 
@@ -21,19 +22,28 @@ class MainListFragment : Fragment() {
     private val binding get() = _binding!!
     private var columnCount = 2
     private lateinit var viewModel: MainViewModel
-    private val adapter = MainListRecyclerViewAdapter()
 
+    private val newProductsAdapter = NewProductsRecyclerAdapter()
+
+    private val mainListAdapter = MainListRecyclerViewAdapter(object : OnItemViewClickListener{
+        override fun onItemViewClick(product: Product) {
+            val manager = activity?.supportFragmentManager
+            if (manager != null) {
+                val bundle = Bundle()
+                bundle.putParcelable(ProductFragment.BUNDLE_EXTRA, product)
+                manager.beginTransaction()
+                    .replace(R.id.container, ProductFragment.newInstance(bundle))
+                    .addToBackStack("")
+                    .commitAllowingStateLoss()
+            }
+        }
+    })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         arguments?.let {
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -41,32 +51,29 @@ class MainListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentMainListBinding.inflate(inflater, container, false)
-        val view = binding.root
-        binding.list.adapter = adapter
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.list.adapter = mainListAdapter
+        binding.listNewProduct.adapter = newProductsAdapter
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
         viewModel.getProduct()
 
-        // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(view.getContext())
-                    else -> GridLayoutManager(view.getContext(), columnCount)
-                }
-                var myAdapter = MainListRecyclerViewAdapter()
-                adapter = myAdapter
+        val rwNewProduct: RecyclerView = view.findViewById(R.id.list_new_product)
+        rwNewProduct.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
 
-            }
+        val list: RecyclerView = view.findViewById(R.id.list)
+        list.layoutManager = when {
+            columnCount <= 1 -> LinearLayoutManager(view.getContext())
+            else -> GridLayoutManager(view.context, columnCount)
         }
-        return view
     }
 
     companion object {
-        // TODO: Customize parameter argument names
         const val ARG_COLUMN_COUNT = "column-count"
-        // TODO: Customize parameter initialization
         @JvmStatic
         fun newInstance(columnCount: Int) =
             MainListFragment().apply {
@@ -79,9 +86,10 @@ class MainListFragment : Fragment() {
     private fun renderData(appState: AppState) {
         when (appState) {
             is AppState.Success -> {
-                val productData = appState.productData
                 binding.listFragmentLoadingLayout.visibility = View.GONE
-                adapter.setValues(productData)
+                newProductsAdapter.setValues(appState.newProductsData)
+                mainListAdapter.setValues(appState.productData)
+
             }
             is AppState.Loading -> {
                 binding.listFragmentLoadingLayout.visibility = View.VISIBLE
@@ -99,5 +107,10 @@ class MainListFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+//        adapter.removeListener()
+    }
+
+    interface OnItemViewClickListener {
+        fun onItemViewClick(product : Product)
     }
 }

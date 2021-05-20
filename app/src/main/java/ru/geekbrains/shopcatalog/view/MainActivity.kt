@@ -53,9 +53,9 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
             R.id.action_main -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, ProductFragment.newInstance())
-                        .commitNow()
+//                supportFragmentManager.beginTransaction()
+//                    .replace(R.id.container, ProductFragment.newInstance())
+//                        .commitNow()
                 return true
             }
             R.id.action_favorite -> {
