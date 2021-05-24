@@ -15,4 +15,9 @@
     <string name="fragment_navigation">Меню</string>
     <string name="new_product">Новинки</string>
     <string name="all_product">Все товары</string>
+    <string name="favorites">Избранное</string>
+    <string name="music">Музыка</string>
+    <string name="places">Место</string>
+    <string name="news">Новости</string>
+    <string name="title_home">home</string>
 </resources>

@@ -1,11 +1,17 @@
 package ru.geekbrains.shopcatalog.view
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import ru.geekbrains.shopcatalog.R
 
@@ -20,10 +26,44 @@ class MainActivity : AppCompatActivity() {
         registerDrawer(toolbar)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-//                    .replace(R.id.container, ProductFragment.newInstance())
             .replace(R.id.container, MainListFragment())
             .commitNow()
         }
+
+        val navView: BottomNavigationView = findViewById(R.id.bottom_nav_view)
+        navView.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_home -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.container, MainListFragment())
+                        .commitNow()
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.navigation_favorite -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.container, FavoriteFragment())
+                        .commitNow()
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.navigation_categories -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.container, CategoriesFragment())
+                        .commitNow()
+                    return@OnNavigationItemSelectedListener true
+                }
+            }
+            false
+        })
+
+//        val navController = findNavController(R.id.nav_host_fragment)
+//        val appBarConfiguration = AppBarConfiguration(setOf(
+//            R.id.navigation_home,
+//            R.id.navigation_favorite,
+//            R.id.navigation_categories,
+//            ))
+//        setupActionBarWithNavController(navController, appBarConfiguration)
+//        navView.setupWithNavController(navController)
+
     }
 
     private fun registerDrawer(toolbar: Toolbar){

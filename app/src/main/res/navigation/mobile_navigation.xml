@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="ru.geekbrains.shopcatalog.view.MainListFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_main_list" >
+        <action
+            android:id="@+id/action_navigation_home_to_productFragment"
+            app:destination="@id/productFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_favorite"
+        android:name="ru.geekbrains.shopcatalog.view.FavoriteFragment"
+        android:label="favorite_fragment"
+        tools:layout="@layout/favorite_fragment" />
+    <fragment
+        android:id="@+id/navigation_categories"
+        android:name="ru.geekbrains.shopcatalog.view.CategoriesFragment"
+        android:label="categories_fragment"
+        tools:layout="@layout/categories_fragment" />
+    <fragment
+        android:id="@+id/productFragment"
+        android:name="ru.geekbrains.shopcatalog.view.ProductFragment"
+        android:label="ProductFragment" />
+
+
+</navigation>
