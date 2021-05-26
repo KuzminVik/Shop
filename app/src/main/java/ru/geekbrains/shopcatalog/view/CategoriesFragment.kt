@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ru.geekbrains.shopcatalog.R
+import ru.geekbrains.shopcatalog.viewmodel.CategoriesViewModel
 
 class CategoriesFragment : Fragment() {
 
@@ -14,7 +15,7 @@ class CategoriesFragment : Fragment() {
         fun newInstance() = CategoriesFragment()
     }
 
-    private lateinit var viewModel: CategoriesViewModel
+    private val viewModel: CategoriesViewModel by lazy { ViewModelProvider(this).get(CategoriesViewModel::class.java) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,7 +26,6 @@ class CategoriesFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(CategoriesViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

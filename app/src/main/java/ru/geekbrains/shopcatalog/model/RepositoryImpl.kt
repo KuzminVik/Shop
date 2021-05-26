@@ -2,12 +2,9 @@ package ru.geekbrains.shopcatalog.model
 
 class RepositoryImpl : Repository {
 
-    override fun getProductFromServer(): List<Product> {
-        val listProduct : MutableList<Product> = ArrayList()
-        return listProduct
-    }
+    override fun getProductFromServer(): MutableList<Product> = ArrayList()
 
-    override fun getProductFromLocalStorage(): List<Product> {
+    override fun getProductFromLocalStorage(): MutableList<Product> {
         val listProduct : MutableList<Product> = ArrayList()
         for (i in 0..10){
             listProduct.add(Product(

@@ -19,5 +19,9 @@
     <string name="music">Музыка</string>
     <string name="places">Место</string>
     <string name="news">Новости</string>
+    <string name="error">Ошибка загрузки данных</string>
+    <string name="reload">reload</string>
     <string name="title_home">home</string>
+
+
 </resources>

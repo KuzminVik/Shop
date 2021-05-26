@@ -36,11 +36,10 @@ class ProductFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val product = arguments?.getParcelable<Product>(BUNDLE_EXTRA)
-        if(product!=null){
-            binding.tvName.text = product.name
-            binding.tvDesc.text = product.description
-            binding.tvPrice.text = product.salePrices.toString()
+        arguments?.getParcelable<Product>(BUNDLE_EXTRA)?.let{
+            binding.tvName.text = it.name
+            binding.tvDesc.text = it.description
+            binding.tvPrice.text = it.salePrices.toString()
             binding.ivFirst.setImageResource(R.drawable.test_mini)
             binding.btnAdd.setOnClickListener(object : View.OnClickListener{
                 override fun onClick(v: View?) {

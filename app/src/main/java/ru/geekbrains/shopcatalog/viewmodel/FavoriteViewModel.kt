@@ -1,4 +1,4 @@
-package ru.geekbrains.shopcatalog.view
+package ru.geekbrains.shopcatalog.viewmodel
 
 import androidx.lifecycle.ViewModel
 

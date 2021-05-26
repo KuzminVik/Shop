@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ru.geekbrains.shopcatalog.R
+import ru.geekbrains.shopcatalog.viewmodel.FavoriteViewModel
 
 class FavoriteFragment : Fragment() {
 
@@ -14,7 +15,7 @@ class FavoriteFragment : Fragment() {
         fun newInstance() = FavoriteFragment()
     }
 
-    private lateinit var viewModel: FavoriteViewModel
+    private val viewModel: FavoriteViewModel by lazy { ViewModelProvider(this).get(FavoriteViewModel::class.java) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,7 +26,6 @@ class FavoriteFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(FavoriteViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

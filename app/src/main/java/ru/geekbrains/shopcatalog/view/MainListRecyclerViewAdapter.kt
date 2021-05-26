@@ -8,7 +8,8 @@ import android.widget.TextView
 import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.model.Product
 
-class MainListRecyclerViewAdapter(private var onItemViewClickListener: MainListFragment.OnItemViewClickListener?) : RecyclerView.Adapter<MainListRecyclerViewAdapter.ViewHolder>() {
+class MainListRecyclerViewAdapter(private var onItemViewClickListener: MainListFragment.OnItemViewClickListener?) :
+        RecyclerView.Adapter<MainListRecyclerViewAdapter.ViewHolder>() {
 
     private var values: List<Product> = listOf()
 
@@ -16,10 +17,6 @@ class MainListRecyclerViewAdapter(private var onItemViewClickListener: MainListF
         values = v
         notifyDataSetChanged()
     }
-
-//    fun removeListener() {
-//        onItemViewClickListener = null
-//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -34,14 +31,14 @@ class MainListRecyclerViewAdapter(private var onItemViewClickListener: MainListF
     override fun getItemCount(): Int = values.size
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-//        val image: ImageView = view.findViewById(R.id.item_image)
         fun bind(product: Product){
-            itemView.findViewById<TextView>(R.id.item_title).text = product.name
-            itemView.findViewById<TextView>(R.id.item_price).text = product.salePrices.toString()
-            itemView.setOnClickListener {
-            onItemViewClickListener?.onItemViewClick(product)
+            itemView.apply {
+                findViewById<TextView>(R.id.item_title).text = product.name
+                findViewById<TextView>(R.id.item_price).text = product.salePrices.toString()
+                setOnClickListener {
+                    onItemViewClickListener?.onItemViewClick(product)
+                }
             }
         }
-
     }
 }
