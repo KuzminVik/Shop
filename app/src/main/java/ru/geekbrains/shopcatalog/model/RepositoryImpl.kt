@@ -1,10 +1,52 @@
 package ru.geekbrains.shopcatalog.model
 
+import android.os.Build
+import android.os.Handler
+import android.util.Base64
+import android.util.Log
+import androidx.annotation.RequiresApi
+import com.google.gson.Gson
+import ru.geekbrains.shopcatalog.BuildConfig
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.lang.Thread.sleep
+import java.net.MalformedURLException
+import java.net.URL
+import java.util.stream.Collectors
+import javax.net.ssl.HttpsURLConnection
+
 class RepositoryImpl : Repository {
 
-    override fun getProductFromServer(): MutableList<Product> = ArrayList()
+    private var data : Product? = null
+
+    private val onLoadListener: ProductLoader.ProductLoaderListener =
+        object : ProductLoader.ProductLoaderListener {
+            override fun onLoaded(product: Product) {
+                getTestData(product)
+            }
+            override fun onFailed(throwable: Throwable) {
+                //Обработка ошибки
+            }
+        }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun getProductFromServer(): MutableList<Product> {
+        val loader = ProductLoader(onLoadListener)
+        loader.loadProduct()
+        val listProduct : MutableList<Product> = ArrayList()
+//        while (data==null){
+//            sleep(1000)
+//            Log.e("", "ДАННЫЕ С СЕРВЕРА РАВНЫ NULL")
+//        }
+        for (i in 0..10){
+            listProduct.add(data!!)
+        }
+        return listProduct
+    }
 
     override fun getProductFromLocalStorage(): MutableList<Product> {
+        val salePrices : ArrayList<Price> = ArrayList()
+        salePrices.add(Price(850000.0))
         val listProduct : MutableList<Product> = ArrayList()
         for (i in 0..10){
             listProduct.add(Product(
@@ -23,12 +65,14 @@ class RepositoryImpl : Repository {
                             "\n Пояс брюк: трикотажная вставка на живот, пояс на резинке регулируется" +
                             "\n Длина брюк по внутреннему шву: 77 см" +
                             "\n Рекомендации по уходу: химчистка",
-                    850000.0))
+                salePrices))
         }
         return listProduct
     }
 
     override fun getNewProductsFromLocalStorage(): List<Product> {
+        val salePrices : ArrayList<Price> = ArrayList()
+        salePrices.add(Price(850000.0))
         val listProduct : MutableList<Product> = ArrayList()
         for (i in 0..10){
             listProduct.add(Product(
@@ -47,8 +91,13 @@ class RepositoryImpl : Repository {
                             "\n Пояс брюк: трикотажная вставка на живот, пояс на резинке регулируется" +
                             "\n Длина брюк по внутреннему шву: 77 см" +
                             "\n Рекомендации по уходу: химчистка",
-                    850000.0))
+                salePrices))
         }
         return listProduct
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun getTestData(product: Product) {
+        data = product
     }
 }

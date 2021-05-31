@@ -34,7 +34,7 @@ class MainListRecyclerViewAdapter(private var onItemViewClickListener: MainListF
         fun bind(product: Product){
             itemView.apply {
                 findViewById<TextView>(R.id.item_title).text = product.name
-                findViewById<TextView>(R.id.item_price).text = product.salePrices.toString()
+                findViewById<TextView>(R.id.item_price).text = product.salePrices.get(0).value.toString()
                 setOnClickListener {
                     onItemViewClickListener?.onItemViewClick(product)
                 }

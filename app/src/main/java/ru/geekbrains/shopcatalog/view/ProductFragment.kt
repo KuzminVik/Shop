@@ -1,5 +1,6 @@
 package ru.geekbrains.shopcatalog.view
 
+import android.os.Build
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,12 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.viewmodel.AppState
 import ru.geekbrains.shopcatalog.databinding.ProductFragmentBinding
 import ru.geekbrains.shopcatalog.model.Product
+import ru.geekbrains.shopcatalog.model.ProductLoader
 import ru.geekbrains.shopcatalog.viewmodel.MainViewModel
 
 class ProductFragment : Fragment() {
@@ -34,8 +37,13 @@ class ProductFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.mainView.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
+
         arguments?.getParcelable<Product>(BUNDLE_EXTRA)?.let{
             binding.tvName.text = it.name
             binding.tvDesc.text = it.description

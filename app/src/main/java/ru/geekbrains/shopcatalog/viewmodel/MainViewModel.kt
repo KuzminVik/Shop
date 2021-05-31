@@ -6,13 +6,19 @@ import ru.geekbrains.shopcatalog.model.Repository
 import ru.geekbrains.shopcatalog.model.RepositoryImpl
 import java.lang.Thread.sleep
 
-class MainViewModel(private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData(),
-        private val repositoryImpl: Repository = RepositoryImpl()) :
-        ViewModel() {
+class MainViewModel(
+    private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData(),
+    private val repositoryImpl: Repository = RepositoryImpl())
+    : ViewModel() {
 
     fun getLiveData() = liveDataToObserve
 
-    fun getProduct() = getDataFromLocalSource()
+    fun getProduct() {
+        liveDataToObserve.value = AppState.Loading
+        liveDataToObserve.postValue(AppState.Success(
+            repositoryImpl.getProductFromServer(),
+            repositoryImpl.getNewProductsFromLocalStorage()))
+    }
 
     /* метод getDataFromLocalSource, который имитирует запрос к БД или ещё какому-то источнику данных в приложении.
    Запрос осуществляется асинхронно в отдельном потоке. */
