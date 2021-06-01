@@ -47,10 +47,7 @@ class MainListFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMainListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -110,7 +107,7 @@ class MainListFragment : Fragment() {
     }
 
     interface OnItemViewClickListener {
-        fun onItemViewClick(product : Product)
+        fun onItemViewClick(product: Product)
     }
 }
 

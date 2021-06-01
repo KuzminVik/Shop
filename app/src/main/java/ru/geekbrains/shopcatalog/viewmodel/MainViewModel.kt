@@ -16,19 +16,7 @@ class MainViewModel(
     fun getProduct() {
         liveDataToObserve.value = AppState.Loading
         liveDataToObserve.postValue(AppState.Success(
-            repositoryImpl.getProductFromServer(),
+            repositoryImpl.getProductsFromLocalStorage(),
             repositoryImpl.getNewProductsFromLocalStorage()))
-    }
-
-    /* метод getDataFromLocalSource, который имитирует запрос к БД или ещё какому-то источнику данных в приложении.
-   Запрос осуществляется асинхронно в отдельном потоке. */
-    private fun getDataFromLocalSource() {
-        liveDataToObserve.value = AppState.Loading
-        Thread {
-            sleep(1000)
-            liveDataToObserve.postValue(AppState.Success(
-                    repositoryImpl.getProductFromLocalStorage(),
-                    repositoryImpl.getNewProductsFromLocalStorage()))
-        }.start()
     }
 }

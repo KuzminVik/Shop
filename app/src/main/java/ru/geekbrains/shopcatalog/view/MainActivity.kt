@@ -1,22 +1,21 @@
 package ru.geekbrains.shopcatalog.view
 
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import ru.geekbrains.shopcatalog.R
 
 
 class MainActivity : AppCompatActivity() {
+
+    private val receiver = MainBroadcastReceiver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,14 +54,7 @@ class MainActivity : AppCompatActivity() {
             false
         })
 
-//        val navController = findNavController(R.id.nav_host_fragment)
-//        val appBarConfiguration = AppBarConfiguration(setOf(
-//            R.id.navigation_home,
-//            R.id.navigation_favorite,
-//            R.id.navigation_categories,
-//            ))
-//        setupActionBarWithNavController(navController, appBarConfiguration)
-//        navView.setupWithNavController(navController)
+        registerReceiver(receiver, IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED))
 
     }
 
@@ -104,5 +96,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return false
+    }
+
+    override fun onDestroy() {
+        unregisterReceiver(receiver)
+        super.onDestroy()
     }
 }
