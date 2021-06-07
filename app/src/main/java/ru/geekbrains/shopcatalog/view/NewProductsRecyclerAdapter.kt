@@ -6,13 +6,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.geekbrains.shopcatalog.R
-import ru.geekbrains.shopcatalog.model.Product
+import ru.geekbrains.shopcatalog.model.ProductDTO
 
 class NewProductsRecyclerAdapter : RecyclerView.Adapter<NewProductsRecyclerAdapter.MyViewHolder>() {
 
-    private var values: List<Product> = listOf()
+    private var values: List<ProductDTO> = listOf()
 
-    public fun setValues(v: List<Product>){
+    public fun setValues(v: List<ProductDTO>){
         values = v
         notifyDataSetChanged()
     }
@@ -30,9 +30,9 @@ class NewProductsRecyclerAdapter : RecyclerView.Adapter<NewProductsRecyclerAdapt
     override fun getItemCount(): Int = values.size
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        fun bind(product: Product) {
-            itemView.findViewById<TextView>(R.id.item_title).text = product.name
-            itemView.findViewById<TextView>(R.id.item_price).text = product.salePrices.toString()
+        fun bind(productDTO: ProductDTO) {
+            itemView.findViewById<TextView>(R.id.item_title).text = productDTO.name
+            itemView.findViewById<TextView>(R.id.item_price).text = productDTO.salePrices.toString()
         }
     }
 }

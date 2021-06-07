@@ -15,8 +15,6 @@ import ru.geekbrains.shopcatalog.R
 
 class MainActivity : AppCompatActivity() {
 
-    private val receiver = MainBroadcastReceiver()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
@@ -53,9 +51,6 @@ class MainActivity : AppCompatActivity() {
             }
             false
         })
-
-        registerReceiver(receiver, IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED))
-
     }
 
     private fun registerDrawer(toolbar: Toolbar){
@@ -99,7 +94,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        unregisterReceiver(receiver)
         super.onDestroy()
     }
 }

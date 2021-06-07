@@ -14,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.databinding.FragmentMainListBinding
 import ru.geekbrains.shopcatalog.model.Product
+import ru.geekbrains.shopcatalog.model.ProductDTO
 import ru.geekbrains.shopcatalog.viewmodel.AppState
 import ru.geekbrains.shopcatalog.viewmodel.MainViewModel
 
@@ -24,7 +25,7 @@ class MainListFragment : Fragment() {
 
     private val viewModel: MainViewModel by lazy {ViewModelProvider(this).get(MainViewModel::class.java)}
 
-    private val newProductsAdapter = NewProductsRecyclerAdapter()
+//    private val newProductsAdapter = NewProductsRecyclerAdapter()
 
     private val mainListAdapter = MainListRecyclerViewAdapter(
             object : OnItemViewClickListener{
@@ -55,12 +56,12 @@ class MainListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.list.adapter = mainListAdapter
-        binding.listNewProduct.adapter = newProductsAdapter
+//        binding.listNewProduct.adapter = newProductsAdapter
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
         viewModel.getProduct()
 
-        val rwNewProduct: RecyclerView = view.findViewById(R.id.list_new_product)
-        rwNewProduct.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+//        val rwNewProduct: RecyclerView = view.findViewById(R.id.list_new_product)
+//        rwNewProduct.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
 
         val list: RecyclerView = view.findViewById(R.id.list)
         list.layoutManager = when {
@@ -84,8 +85,8 @@ class MainListFragment : Fragment() {
         when (appState) {
             is AppState.Success -> {
                 binding.listFragmentLoadingLayout.visibility = View.GONE
-                newProductsAdapter.setValues(appState.newProductsData)
-                mainListAdapter.setValues(appState.productData)
+//                newProductsAdapter.setValues(appState.newProductsData)
+                mainListAdapter.setValues(appState.productData as List<Product>)
             }
             is AppState.Loading -> {
                 binding.listFragmentLoadingLayout.visibility = View.VISIBLE
@@ -111,7 +112,7 @@ class MainListFragment : Fragment() {
     }
 }
 
-private fun View.showSnackBar(
+fun View.showSnackBar(
         text: String,
         actionText: String,
         action: (View) -> Unit,

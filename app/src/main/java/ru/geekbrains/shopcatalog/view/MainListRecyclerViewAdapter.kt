@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.model.Product
+import ru.geekbrains.shopcatalog.model.ProductDTO
 
 class MainListRecyclerViewAdapter(private var onItemViewClickListener: MainListFragment.OnItemViewClickListener?) :
         RecyclerView.Adapter<MainListRecyclerViewAdapter.ViewHolder>() {
@@ -34,7 +35,7 @@ class MainListRecyclerViewAdapter(private var onItemViewClickListener: MainListF
         fun bind(product: Product){
             itemView.apply {
                 findViewById<TextView>(R.id.item_title).text = product.name
-                findViewById<TextView>(R.id.item_price).text = product.salePrices.get(0).value.toString()
+                findViewById<TextView>(R.id.item_price).text = product.salePrices
                 setOnClickListener {
                     onItemViewClickListener?.onItemViewClick(product)
                 }

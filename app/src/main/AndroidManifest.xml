@@ -20,7 +20,6 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".view.DetailsService" />
     </application>
 
 </manifest>

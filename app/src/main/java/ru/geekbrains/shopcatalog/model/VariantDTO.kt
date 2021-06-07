@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Variant(
+data class VariantDTO(
         val id : String?,
         val updated : String?,
         val name : String?,
@@ -20,7 +20,8 @@ data class ProductInVariant(
 
 @Parcelize
 data class Meta(
-       val href : String?
+       val href : String?,
+       val downloadHref: String?
 ) : Parcelable
 
 @Parcelize
