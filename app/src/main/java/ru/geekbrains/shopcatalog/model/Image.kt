@@ -8,4 +8,4 @@ data class Image(
     val original: String = " ",
     val miniature: String = " ",
     val tiny: String = " "
-): Parcelable, DeteilsEntity
+): Parcelable

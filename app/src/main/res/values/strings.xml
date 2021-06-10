@@ -22,6 +22,7 @@
     <string name="error">Ошибка загрузки данных</string>
     <string name="reload">reload</string>
     <string name="title_home">home</string>
+    <string name="viewed_product">Последние просмотренные товары</string>
 
 
 </resources>

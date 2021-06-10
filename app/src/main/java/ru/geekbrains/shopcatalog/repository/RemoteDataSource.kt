@@ -19,7 +19,7 @@ class RemoteDataSource {
         .addConverterFactory(
             GsonConverterFactory.create(GsonBuilder().setLenient().create())
         )
-            .client(createOkHttpClient(WeatherApiInterceptor()))
+            .client(createOkHttpClient(ProductApiInterceptor()))
             .build().create(ProductAPI::class.java)
 
     fun getProductDetails(id: String, callback: Callback<ProductDTO>){
@@ -37,9 +37,10 @@ class RemoteDataSource {
         return httpClient.build()
     }
 
-    inner class WeatherApiInterceptor : Interceptor {
+    inner class ProductApiInterceptor : Interceptor {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+
             return chain.proceed(chain.request())
         }
     }

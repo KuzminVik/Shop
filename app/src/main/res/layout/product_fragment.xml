@@ -10,93 +10,120 @@
     android:layout_marginEnd="@dimen/margin_normal"
     android:layout_marginBottom="@dimen/margin_normal">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/mainView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context=".view.ProductFragment">
-
-        <ImageView
-            android:id="@+id/iv_first"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/img_desc"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/backgrounds/scenic" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_normal"
-            android:breakStrategy="simple"
-            android:scrollHorizontally="false"
-            android:text="@string/tv_name_default"
-            android:textSize="@dimen/title_textsize"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_first" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/mainView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:context=".view.ProductFragment">
 
-        <TextView
-            android:id="@+id/tv_desc"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            android:breakStrategy="simple"
-            android:scrollHorizontally="false"
-            android:text="@string/tv_desc_default"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+                <ImageView
+                    android:id="@+id/iv_first"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/img_desc"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@tools:sample/backgrounds/scenic" />
 
-        <TextView
-            android:id="@+id/tv_price"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            android:text="@string/tv_price_default"
-            android:textSize="@dimen/title_textsize"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_desc" />
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:breakStrategy="simple"
+                    android:scrollHorizontally="false"
+                    android:text="@string/tv_name_default"
+                    android:textSize="@dimen/title_textsize"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/iv_first" />
 
-        <Button
-            android:id="@+id/btn_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_normal"
-            android:insetTop="@dimen/margin_small"
-            android:insetBottom="@dimen/margin_small"
-            android:text="@string/btn_txt_default"
-            android:textSize="@dimen/btn_textsize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_price" />
+                <TextView
+                    android:id="@+id/tv_desc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:breakStrategy="simple"
+                    android:scrollHorizontally="false"
+                    android:text="@string/tv_desc_default"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+                <TextView
+                    android:id="@+id/tv_price"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:text="@string/tv_price_default"
+                    android:textSize="@dimen/title_textsize"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_desc" />
+
+                <Button
+                    android:id="@+id/btn_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:insetTop="@dimen/margin_small"
+                    android:insetBottom="@dimen/margin_small"
+                    android:text="@string/btn_txt_default"
+                    android:textSize="@dimen/btn_textsize"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_price" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/tv_new_products"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@string/viewed_product"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/historyViewedRecyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/margin_small"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="2"
+                tools:listitem="@layout/main_recycler_item" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <FrameLayout
         android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/loadingBackground"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:visibility="invisible"
+        tools:visibility="invisible">
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+        <include
+            android:id="@+id/includedLoadingLayout"
+            layout="@layout/loading_layout" />
     </FrameLayout>
 
 </FrameLayout>

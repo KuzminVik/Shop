@@ -22,7 +22,6 @@ class MainListFragment : Fragment() {
     private var _binding: FragmentMainListBinding? = null
     private val binding get() = _binding!!
     private var columnCount = 2
-
     private val viewModel: MainViewModel by lazy {ViewModelProvider(this).get(MainViewModel::class.java)}
 
 //    private val newProductsAdapter = NewProductsRecyclerAdapter()
@@ -86,7 +85,7 @@ class MainListFragment : Fragment() {
             is AppState.Success -> {
                 binding.listFragmentLoadingLayout.visibility = View.GONE
 //                newProductsAdapter.setValues(appState.newProductsData)
-                mainListAdapter.setValues(appState.productData as List<Product>)
+                mainListAdapter.setValues(appState.productData)
             }
             is AppState.Loading -> {
                 binding.listFragmentLoadingLayout.visibility = View.VISIBLE

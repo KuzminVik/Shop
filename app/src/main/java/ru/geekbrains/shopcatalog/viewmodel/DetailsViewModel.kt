@@ -6,8 +6,12 @@ import retrofit2.Call
 import ru.geekbrains.shopcatalog.model.ProductDTO
 import retrofit2.Callback
 import retrofit2.Response
+import ru.geekbrains.shopcatalog.app.App.Companion.getHistoryDao
 import ru.geekbrains.shopcatalog.model.ImagesFromProductDTO
+import ru.geekbrains.shopcatalog.model.Product
 import ru.geekbrains.shopcatalog.repository.*
+import ru.geekbrains.shopcatalog.room.LocalRepository
+import ru.geekbrains.shopcatalog.room.LocalRepositoryImpl
 import ru.geekbrains.shopcatalog.utils.convertImagesDtoToModel
 import ru.geekbrains.shopcatalog.utils.convertProductDtoToModel
 
@@ -17,15 +21,27 @@ private const val CORRUPTED_DATA = "Неполные данные"
 
 class DetailsViewModel(
         val detailsLiveData: MutableLiveData<AppState> = MutableLiveData(),
-        private val detailsRepositoryImpl: DetailsRepository = DetailsRepositoryImpl(RemoteDataSource())
+        val imageLiveData: MutableLiveData<AppState> = MutableLiveData(),
+        val historyLiveData: MutableLiveData<AppState> = MutableLiveData(),
+        private val detailsRepositoryImpl: DetailsRepository = DetailsRepositoryImpl(RemoteDataSource()),
+        private val historyRepository: LocalRepository = LocalRepositoryImpl(getHistoryDao())
 ): ViewModel() {
 
-    fun getLiveData() = detailsLiveData
+    fun getProductLiveData() = detailsLiveData
 
     fun getProductFromRemoteSource(id: String) {
         detailsLiveData.value = AppState.Loading
         detailsRepositoryImpl.getProductFromServer(id, callBackProduct)
         detailsRepositoryImpl.getImagesFromServer(id, callBackImages)
+    }
+
+    fun saveHistoryProductToToDB(product: Product) {
+        historyRepository.saveEntity(product)
+    }
+
+    fun getAllHistory() {
+        historyLiveData.value = AppState.Loading
+        historyLiveData.value = AppState.SuccessHistory(historyRepository.getAllHistoryViewed())
     }
 
     private val callBackProduct = object:  Callback<ProductDTO> {
@@ -56,7 +72,7 @@ class DetailsViewModel(
     private val callBackImages = object:  Callback<ImagesFromProductDTO>{
         override fun onResponse(call: Call<ImagesFromProductDTO>, response: Response<ImagesFromProductDTO>) {
             val serverResponseImages: ImagesFromProductDTO? = response.body()
-            detailsLiveData.postValue(
+            imageLiveData.postValue(
                 if (response.isSuccessful && serverResponseImages != null) {
                     checkResponseImages(serverResponseImages)
                 } else {
@@ -66,7 +82,7 @@ class DetailsViewModel(
         }
 
         override fun onFailure(call: Call<ImagesFromProductDTO>, t: Throwable) {
-            detailsLiveData.postValue(AppState.Error(Throwable(t.message ?: REQUEST_ERROR)))
+            imageLiveData.postValue(AppState.Error(Throwable(t.message ?: REQUEST_ERROR)))
         }
 
         private fun checkResponseImages(serverResponse: ImagesFromProductDTO): AppState {
@@ -75,7 +91,7 @@ class DetailsViewModel(
             return if (index!!.meta!!.downloadHref == null || index.miniature == null || index.tiny == null) {
                 AppState.Error(Throwable(CORRUPTED_DATA))
             } else {
-                AppState.Success(convertImagesDtoToModel(serverResponse))
+                AppState.SuccessImage(convertImagesDtoToModel(serverResponse))
             }
         }
 

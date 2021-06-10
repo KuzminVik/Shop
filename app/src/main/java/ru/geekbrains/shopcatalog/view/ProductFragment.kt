@@ -8,8 +8,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import coil.api.load
-import com.bumptech.glide.Glide
+import coil.ImageLoader
+import coil.request.ImageRequest
+import ru.geekbrains.shopcatalog.BuildConfig
 import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.databinding.ProductFragmentBinding
 import ru.geekbrains.shopcatalog.model.Image
@@ -32,6 +33,21 @@ class ProductFragment : Fragment() {
         }
     }
 
+    private val historyViewedAdapter: HistoryViewedAdapter by lazy { HistoryViewedAdapter(
+        object : MainListFragment.OnItemViewClickListener {
+            override fun onItemViewClick(product: Product) {
+                activity?.supportFragmentManager?.apply {
+                    beginTransaction()
+                        .replace(R.id.container, ProductFragment.newInstance(Bundle().apply {
+                            putParcelable(ProductFragment.BUNDLE_EXTRA, product)
+                        }))
+                        .addToBackStack("")
+                        .commitAllowingStateLoss()
+                }
+            }
+        }
+    ) }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         _binding = ProductFragmentBinding.inflate(inflater, container, false)
@@ -41,8 +57,12 @@ class ProductFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         productBundle = arguments?.getParcelable(BUNDLE_EXTRA) ?: Product()
-        viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
+        viewModel.getProductLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
         viewModel.getProductFromRemoteSource(productBundle.id)
+        binding.historyViewedRecyclerview.adapter = historyViewedAdapter
+        viewModel.historyLiveData.observe(viewLifecycleOwner, Observer { renderDataHistory(it) })
+        viewModel.getAllHistory()
+        viewModel.imageLiveData.observe(viewLifecycleOwner, Observer { renderDataImage(it) })
     }
 
     private fun renderData(appState: AppState) {
@@ -50,11 +70,8 @@ class ProductFragment : Fragment() {
             is AppState.Success -> {
                 binding.mainView.visibility = View.VISIBLE
                 binding.loadingLayout.visibility = View.GONE
-                if(appState.productData[0] is Product){
-                    setProduct(appState.productData[0] as Product)
-                }else if(appState.productData[0] is Image){
-                    setImage(appState.productData[0] as Image)
-                }
+                setProduct(appState.productData[0])
+
             }
 
             is AppState.Loading -> {
@@ -75,6 +92,32 @@ class ProductFragment : Fragment() {
         }
     }
 
+    private fun renderDataHistory(appState: AppState){
+        when(appState){
+            is AppState.SuccessHistory -> {
+                historyViewedAdapter.setData(appState.historyData)
+            }
+
+            is AppState.Loading -> {
+                //добавить свой прогресс бар
+//                binding.mainView.visibility = View.GONE
+//                binding.loadingLayout.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun renderDataImage(appState: AppState){
+        when(appState){
+            is AppState.SuccessImage -> {
+                setImage(appState.imageData[0])
+            }
+
+            is AppState.Loading -> {
+                //добавить свой прогресс бар
+            }
+        }
+    }
+
     private fun setProduct(product: Product) {
         binding.tvName.text = product.name
         binding.tvDesc.text = product.description
@@ -84,11 +127,24 @@ class ProductFragment : Fragment() {
                 Toast.makeText(context, "Товар добавлен в избранное", Toast.LENGTH_LONG).show()
             }
         })
+        saveProductToHistoryViewed(product)
     }
 
     private fun setImage(img: Image){
-//        binding.ivFirst.load(img.original)
-        Glide.with(this).load(img.original).into(binding.ivFirst)
+        val imageLoader = ImageLoader.Builder(this.requireContext())
+                .crossfade(true)
+                .build()
+        val request = ImageRequest.Builder(this.requireContext())
+                .data(img.original)
+                .setHeader("Authorization", "Bearer ${BuildConfig.API_AUTHORIZATION}")
+                .crossfade(true)
+                .target(binding.ivFirst)
+                .build()
+        imageLoader.enqueue(request)
+    }
+
+    private fun saveProductToHistoryViewed(product: Product){
+        viewModel.saveHistoryProductToToDB(product)
     }
 
     override fun onDestroyView() {
