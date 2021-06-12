@@ -69,18 +69,17 @@ class ProductFragment : Fragment() {
         when(appState){
             is AppState.Success -> {
                 binding.mainView.visibility = View.VISIBLE
-                binding.loadingLayout.visibility = View.GONE
+                binding.includedLoadingLayout.loadingLayout.visibility = View.GONE
                 setProduct(appState.productData[0])
-
             }
 
             is AppState.Loading -> {
                 binding.mainView.visibility = View.GONE
-                binding.loadingLayout.visibility = View.VISIBLE
+                binding.includedLoadingLayout.loadingLayout.visibility = View.VISIBLE
             }
             is AppState.Error -> {
                 binding.mainView.visibility = View.VISIBLE
-                binding.loadingLayout.visibility = View.GONE
+                binding.includedLoadingLayout.loadingLayout.visibility = View.GONE
                 binding.mainView.showSnackBar(
                         getString(R.string.error),
                         getString(R.string.reload),
@@ -132,15 +131,16 @@ class ProductFragment : Fragment() {
 
     private fun setImage(img: Image){
         val imageLoader = ImageLoader.Builder(this.requireContext())
-                .crossfade(true)
+//                .crossfade(true)
                 .build()
         val request = ImageRequest.Builder(this.requireContext())
                 .data(img.original)
                 .setHeader("Authorization", "Bearer ${BuildConfig.API_AUTHORIZATION}")
-                .crossfade(true)
+//                .crossfade(true)
                 .target(binding.ivFirst)
                 .build()
         imageLoader.enqueue(request)
+
     }
 
     private fun saveProductToHistoryViewed(product: Product){
