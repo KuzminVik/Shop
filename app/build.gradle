@@ -1,9 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
+//    id 'kotlin-android-extensions'
     id 'kotlin-kapt'
-//    id 'kotlin-parcelize'
+    id 'kotlin-parcelize'
 }
 
 android {
@@ -49,7 +49,7 @@ android {
 dependencies {
 //    implementation 'com.google.code.gson:gson:2.8.6'
     //Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.10"
     implementation 'androidx.core:core-ktx:1.5.0'
     //Design
     implementation 'androidx.appcompat:appcompat:1.3.0'
@@ -76,8 +76,4 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-
-
-
-
 }

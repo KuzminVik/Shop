@@ -1,11 +1,15 @@
 package ru.geekbrains.shopcatalog.view
 
+import android.Manifest
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.motion.widget.Debug.getLocation
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -89,9 +93,41 @@ class MainActivity : AppCompatActivity() {
                 // открыть фрагмент в контейнере
                 return true
             }
+            R.id.action_contacts -> {
+                supportFragmentManager.apply {
+                    beginTransaction()
+                        .replace(R.id.container, ContentProviderFragment.newInstance())
+                        .addToBackStack("")
+                        .commitAllowingStateLoss()
+                }
+
+                return true
+            }
+            R.id.action_geolocation -> {
+                // открыть фрагмент в контейнере
+                return true
+            }
         }
         return false
     }
+
+//    private fun checkPermission() {
+//        activity?.let {
+//            when {
+//                ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) ==
+//                        PackageManager.PERMISSION_GRANTED -> {
+//                    getLocation()
+//                }
+//                shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
+//                    showRationaleDialog()
+//                }
+//                else -> {
+//                    requestPermission()
+//                }
+//            }
+//        }
+//    }
+
 
     override fun onDestroy() {
         super.onDestroy()

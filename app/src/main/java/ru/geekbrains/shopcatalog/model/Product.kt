@@ -1,8 +1,7 @@
 package ru.geekbrains.shopcatalog.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
-
+import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Product(
         val id: String = " ",
@@ -11,4 +10,4 @@ data class Product(
         val salePrices : String = "default",
 //        val images: String = "default",
 //        val sizes: List<String> = listOf("42", "44", "46", "48", "50", "52")
-): Parcelable, DeteilsEntity
+): Parcelable

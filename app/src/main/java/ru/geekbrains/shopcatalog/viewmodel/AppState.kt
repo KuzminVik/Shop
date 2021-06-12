@@ -1,6 +1,5 @@
 package ru.geekbrains.shopcatalog.viewmodel
 
-import ru.geekbrains.shopcatalog.model.DeteilsEntity
 import ru.geekbrains.shopcatalog.model.Image
 import ru.geekbrains.shopcatalog.model.Product
 
