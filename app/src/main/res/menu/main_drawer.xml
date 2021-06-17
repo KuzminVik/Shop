@@ -22,7 +22,7 @@
         android:title="@string/mycontacts"/>
     <item
         android:id="@+id/action_geolocation"
-        android:icon="@android:drawable/btn_star_big_on"
+        android:icon="@android:drawable/ic_dialog_map"
         android:orderInCategory="20"
         android:title="@string/storfromcarts"/>
 </menu>

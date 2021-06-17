@@ -1,15 +1,20 @@
 package ru.geekbrains.shopcatalog.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import coil.ImageLoader
-import coil.request.ImageRequest
+import com.squareup.picasso.OkHttp3Downloader
+import com.squareup.picasso.Picasso
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.logging.HttpLoggingInterceptor
 import ru.geekbrains.shopcatalog.BuildConfig
 import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.databinding.ProductFragmentBinding
@@ -17,6 +22,7 @@ import ru.geekbrains.shopcatalog.model.Image
 import ru.geekbrains.shopcatalog.model.Product
 import ru.geekbrains.shopcatalog.viewmodel.AppState
 import ru.geekbrains.shopcatalog.viewmodel.DetailsViewModel
+import java.io.IOException
 
 class ProductFragment : Fragment() {
     private var _binding: ProductFragmentBinding? = null
@@ -48,8 +54,10 @@ class ProductFragment : Fragment() {
         }
     ) }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = ProductFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -81,11 +89,11 @@ class ProductFragment : Fragment() {
                 binding.mainView.visibility = View.VISIBLE
                 binding.includedLoadingLayout.loadingLayout.visibility = View.GONE
                 binding.mainView.showSnackBar(
-                        getString(R.string.error),
-                        getString(R.string.reload),
-                        {
-                            viewModel.getProductFromRemoteSource(productBundle.id)
-                        }
+                    getString(R.string.error),
+                    getString(R.string.reload),
+                    {
+                        viewModel.getProductFromRemoteSource(productBundle.id)
+                    }
                 )
             }
         }
@@ -121,7 +129,7 @@ class ProductFragment : Fragment() {
         binding.tvName.text = product.name
         binding.tvDesc.text = product.description
         binding.tvPrice.text = product.salePrices
-        binding.btnAdd.setOnClickListener(object : View.OnClickListener{
+        binding.btnAdd.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 Toast.makeText(context, "Товар добавлен в избранное", Toast.LENGTH_LONG).show()
             }
@@ -130,17 +138,24 @@ class ProductFragment : Fragment() {
     }
 
     private fun setImage(img: Image){
-        val imageLoader = ImageLoader.Builder(this.requireContext())
-//                .crossfade(true)
-                .build()
-        val request = ImageRequest.Builder(this.requireContext())
-                .data(img.original)
-                .setHeader("Authorization", "Bearer ${BuildConfig.API_AUTHORIZATION}")
-//                .crossfade(true)
-                .target(binding.ivFirst)
-                .build()
-        imageLoader.enqueue(request)
-
+        val client = OkHttpClient.Builder()
+            .addInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): Response? {
+                    val newRequest: Request = chain.request().newBuilder()
+                        .addHeader("Authorization", "Bearer ${BuildConfig.API_AUTHORIZATION}")
+                        .build()
+                    return chain.proceed(newRequest)
+                }
+            })
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .build()
+        val picasso = Picasso.Builder(this.requireContext())
+            .downloader(OkHttp3Downloader(client))
+            .build()
+        picasso
+            .load(img.original)
+            .into(binding.ivFirst);
     }
 
     private fun saveProductToHistoryViewed(product: Product){

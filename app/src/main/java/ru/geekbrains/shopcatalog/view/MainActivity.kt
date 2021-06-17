@@ -1,21 +1,17 @@
 package ru.geekbrains.shopcatalog.view
 
-import android.Manifest
-import android.content.Intent
-import android.content.IntentFilter
-import android.content.pm.PackageManager
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.motion.widget.Debug.getLocation
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.gms.location.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import ru.geekbrains.shopcatalog.googlemaps.GoogleMapsFragment
 import ru.geekbrains.shopcatalog.R
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,8 +23,8 @@ class MainActivity : AppCompatActivity() {
         registerDrawer(toolbar)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-            .replace(R.id.container, MainListFragment())
-            .commitNow()
+                .replace(R.id.container, MainListFragment())
+                .commitNow()
         }
 
         val navView: BottomNavigationView = findViewById(R.id.bottom_nav_view)
@@ -57,7 +53,11 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun registerDrawer(toolbar: Toolbar){
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
+    private fun registerDrawer(toolbar: Toolbar) {
         val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
         val toggle = ActionBarDrawerToggle(
             this, drawer, toolbar,
@@ -104,32 +104,56 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
             R.id.action_geolocation -> {
-                // открыть фрагмент в контейнере
+                supportFragmentManager.apply {
+                    beginTransaction()
+                        .add(R.id.container, GoogleMapsFragment())
+                        .addToBackStack("")
+                        .commitAllowingStateLoss()
+//                setOnClickListener { checkPermission() }
+                }
                 return true
             }
         }
         return false
     }
 
-//    private fun checkPermission() {
-//        activity?.let {
-//            when {
-//                ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) ==
-//                        PackageManager.PERMISSION_GRANTED -> {
-//                    getLocation()
+    companion object {
+        fun removeGeofences(context: Context, triggeringGeofenceList: MutableList<Geofence>) {
+            val geofenceIdList = mutableListOf<String>()
+            for (entry in triggeringGeofenceList) {
+                geofenceIdList.add(entry.requestId)
+            }
+            LocationServices.getGeofencingClient(context).removeGeofences(geofenceIdList)
+        }
+
+//        fun showNotification(context: Context?, message: String) {
+//            val CHANNEL_ID = "REMINDER_NOTIFICATION_CHANNEL"
+//            var notificationId = 1589
+//            notificationId += Random(notificationId).nextInt(1, 30)
+//
+//            val notificationBuilder = NotificationCompat.Builder(context!!.applicationContext, CHANNEL_ID)
+//                .setSmallIcon(R.drawable.ic_alarm)
+//                .setContentTitle(context.getString(R.string.app_name))
+//                .setContentText(message)
+//                .setStyle(
+//                    NotificationCompat.BigTextStyle()
+//                        .bigText(message)
+//                )
+//                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//
+//            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                val channel = NotificationChannel(
+//                    CHANNEL_ID,
+//                    context.getString(R.string.app_name),
+//                    NotificationManager.IMPORTANCE_DEFAULT
+//                ).apply {
+//                    description = context.getString(R.string.app_name)
 //                }
-//                shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
-//                    showRationaleDialog()
-//                }
-//                else -> {
-//                    requestPermission()
-//                }
+//                notificationManager.createNotificationChannel(channel)
 //            }
+//            notificationManager.notify(notificationId, notificationBuilder.build())
 //        }
-//    }
-
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 }

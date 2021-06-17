@@ -21,6 +21,8 @@ interface ProductAPI {
         @Path("id") id: String
     ): Call<ImagesFromProductDTO>
 
+    
+
 //    @GET("entity/variant/{id}")
 //    fun getListVariantForProduct(
 //    @Header("Authorization")  token: String,

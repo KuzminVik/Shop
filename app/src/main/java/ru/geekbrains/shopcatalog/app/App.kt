@@ -31,7 +31,7 @@ class App: Application() {
                     }
                 }
             }
-            return db!!.viewedRroductsDAO()
+            return db!!.viewedProductsDAO()
         }
     }
 
