@@ -1,19 +1,28 @@
 package ru.geekbrains.shopcatalog.googlemaps
 
 import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.Context
+import android.content.Context.JOB_SCHEDULER_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.fragment.app.Fragment
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -25,7 +34,7 @@ import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.databinding.FragmentMapsBinding
 import ru.geekbrains.shopcatalog.utils.latitude
 import ru.geekbrains.shopcatalog.utils.longitude
-
+import kotlin.random.Random
 
 const val GEOFENCE_RADIUS = 200
 const val GEOFENCE_ID = "REMINDER_GEOFENCE_ID"
@@ -180,7 +189,7 @@ class GoogleMapsFragment : Fragment() {
 
         val intent = Intent(context, GeofenceBroadcastReceiver::class.java)
             .putExtra("key", EXTRA_KEY)
-            .putExtra("message", "Geofence alert - ${location.latitude}, ${location.longitude}")
+            .putExtra("message", getString(R.string.geofence_message_notification))
 
         val pendingIntent = PendingIntent.getBroadcast(
             activity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT
@@ -216,6 +225,36 @@ class GoogleMapsFragment : Fragment() {
                 geofenceIdList.add(entry.requestId)
             }
             LocationServices.getGeofencingClient(context).removeGeofences(geofenceIdList)
+        }
+
+        fun showNotification(context: Context?, message: String) {
+            val CHANNEL_ID = "REMINDER_NOTIFICATION_CHANNEL"
+            var notificationId = 1589
+            notificationId += Random(notificationId).nextInt(1, 30)
+
+            val notificationBuilder = NotificationCompat.Builder(context!!.applicationContext, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_baseline_add_location_24)
+                .setContentTitle(context.getString(R.string.app_name))
+                .setContentText(message)
+                .setStyle(
+                    NotificationCompat.BigTextStyle()
+                        .bigText(message)
+                )
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val channel = NotificationChannel(
+                    CHANNEL_ID,
+                    context.getString(R.string.app_name),
+                    NotificationManager.IMPORTANCE_DEFAULT
+                ).apply {
+                    description = context.getString(R.string.app_name)
+                }
+                notificationManager.createNotificationChannel(channel)
+            }
+            notificationManager.notify(notificationId, notificationBuilder.build())
         }
     }
 }

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "826996263115",
+    "project_id": "shopcatalog-c8a7d",
+    "storage_bucket": "shopcatalog-c8a7d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:826996263115:android:32cb7650c4bb1e0a6d334e",
+        "android_client_info": {
+          "package_name": "ru.geekbrains.shopcatalog"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "826996263115-rib1s6sd3pteprhfaf7s098avh219h71.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAhwyYtpNO4QFMtTfoa0DRAqcJL_QeqBE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "826996263115-rib1s6sd3pteprhfaf7s098avh219h71.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

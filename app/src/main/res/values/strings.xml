@@ -42,7 +42,7 @@
     <string name="default_address">ул. Московская, 24, Калуга</string>
     <string name="button_search_map">Search</string>
     <string name="marker_start">Всё для мам</string>
-
+    <string name="geofence_message_notification">До магазина "Все для мам" осталось 200 метров</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
