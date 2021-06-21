@@ -12,6 +12,15 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
+    signingConfigs {
+        release {
+            storeFile file("keystore.jks")
+            storePassword '${BuildConfig.STORE_PASS}'
+            keyAlias 'key0'
+            keyPassword '${BuildConfig.KEY_PASS}'
+        }
+    }
+
     defaultConfig {
         applicationId "ru.geekbrains.shopcatalog"
         minSdkVersion 26
@@ -33,13 +42,31 @@ android {
         it.buildConfigField "String", "API_AUTHORIZATION", apiKey
         def googleapiKey  = properties.getProperty("google_apikey", "")
         it.buildConfigField "String", "API_GOOGLE", googleapiKey
+        def storePass = properties.getProperty("storePass", "")
+        it.buildConfigField "String", "STORE_PASS", storePass
+        def keyPass = properties.getProperty("keyPass", "")
+        it.buildConfigField "String", "KEY_PASS", keyPass
     }
 
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "TYPE", '"RELEASE"'
         }
+
+        beta {
+            initWith debug
+            versionNameSuffix "-beta"
+            buildConfigField "String", "TYPE", '"BETA"'
+        }
+
+        debug {
+            versionNameSuffix "-debug"
+            buildConfigField "String", "TYPE", '"DEBUG"'
+        }
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -73,11 +100,10 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.2'
     //picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
-    //google maps and play
+    //google maps and location
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
 //    implementation 'com.google.android.gms:play-services:12.0.1'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
-
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:26.5.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
