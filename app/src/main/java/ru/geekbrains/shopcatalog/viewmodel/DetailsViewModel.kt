@@ -64,7 +64,7 @@ class DetailsViewModel(
             return if (prod.id == null || prod.name == null || prod.description == null || prod.salePrices?.get(0)?.value == null) {
                 AppState.Error(Throwable(CORRUPTED_DATA))
             } else {
-                AppState.Success(convertProductDtoToModel(serverResponse))
+                AppState.SuccessProduct(convertProductDtoToModel(serverResponse))
             }
         }
     }
@@ -96,5 +96,4 @@ class DetailsViewModel(
         }
 
     }
-
 }

@@ -5,15 +5,15 @@ import androidx.room.*
 @Dao
 interface ViewedRroductsDAO {
 
-    @Query("SELECT * FROM ViewedRroductsEntity")
-    fun all(): List<ViewedRroductsEntity>
+    @Query("SELECT * FROM ViewedProductsEntity")
+    fun all(): List<ViewedProductsEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(entity: ViewedRroductsEntity)
+    fun insert(entity: ViewedProductsEntity)
 
     @Update
-    fun update(entity: ViewedRroductsEntity)
+    fun update(entity: ViewedProductsEntity)
 
     @Delete
-    fun delete(entity: ViewedRroductsEntity)
+    fun delete(entity: ViewedProductsEntity)
 }

@@ -9,7 +9,7 @@ import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.model.Product
 import ru.geekbrains.shopcatalog.model.ProductDTO
 
-class MainListRecyclerViewAdapter(private var onItemViewClickListener: MainListFragment.OnItemViewClickListener?) :
+class MainListRecyclerViewAdapter :
         RecyclerView.Adapter<MainListRecyclerViewAdapter.ViewHolder>() {
 
     private var values: List<Product> = listOf()
@@ -36,9 +36,6 @@ class MainListRecyclerViewAdapter(private var onItemViewClickListener: MainListF
             itemView.apply {
                 findViewById<TextView>(R.id.item_title).text = product.name
                 findViewById<TextView>(R.id.item_price).text = product.salePrices
-                setOnClickListener {
-                    onItemViewClickListener?.onItemViewClick(product)
-                }
             }
         }
     }

@@ -10,6 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import ru.geekbrains.shopcatalog.BuildConfig
 import ru.geekbrains.shopcatalog.model.ImagesFromProductDTO
 import ru.geekbrains.shopcatalog.model.ProductDTO
+import ru.geekbrains.shopcatalog.model.ProductListDTO
 import java.io.IOException
 
 class RemoteDataSource {
@@ -17,17 +18,31 @@ class RemoteDataSource {
     private val productAPI = Retrofit.Builder()
         .baseUrl("https://online.moysklad.ru/api/remap/1.2/")
         .addConverterFactory(
-            GsonConverterFactory.create(GsonBuilder().setLenient().create())
+            GsonConverterFactory.create(
+                GsonBuilder().setLenient().setDateFormat("yyyy-MM-dd").create()
+            )
         )
-            .client(createOkHttpClient(ProductApiInterceptor()))
-            .build().create(ProductAPI::class.java)
+        .client(createOkHttpClient(ProductApiInterceptor()))
+        .build().create(ProductAPI::class.java)
 
-    fun getProductDetails(id: String, callback: Callback<ProductDTO>){
+    fun getProductDetails(id: String, callback: Callback<ProductDTO>) {
         productAPI.getProduct("Bearer ${BuildConfig.API_AUTHORIZATION}", id).enqueue(callback)
     }
 
-    fun getImagesDetails(id: String, callback: Callback<ImagesFromProductDTO>){
-        productAPI.getImagesFromProduct("Bearer ${BuildConfig.API_AUTHORIZATION}", id).enqueue(callback)
+    fun getImagesDetails(id: String, callback: Callback<ImagesFromProductDTO>) {
+        productAPI.getImagesFromProduct("Bearer ${BuildConfig.API_AUTHORIZATION}", id)
+            .enqueue(callback)
+    }
+
+    fun getListProductsInTheCategory(productFolderId: String, callback: Callback<ProductListDTO>) {
+        productAPI.getProductsInTheCategory(
+            "Bearer ${BuildConfig.API_AUTHORIZATION}",
+            productFolderId,
+            "positiveOnly",
+            "product",
+            "supplier,productFolder,images",
+            100
+        ).enqueue(callback)
     }
 
     private fun createOkHttpClient(interceptor: Interceptor): OkHttpClient {

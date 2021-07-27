@@ -21,7 +21,6 @@ data class ProductInVariant(
 @Parcelize
 data class Meta(
        val href : String?,
-       val downloadHref: String?
 ) : Parcelable
 
 @Parcelize

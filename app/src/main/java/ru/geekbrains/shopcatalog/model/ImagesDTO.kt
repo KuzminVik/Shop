@@ -8,17 +8,17 @@ data class ImagesFromProductDTO(
     val rows: ArrayList<ImageDTO>?
 ): Parcelable
 
-//@Parcelize
-//data class RowsDTO(
-//    val images: ArrayList<ImageDTO>?
-//): Parcelable
-
 @Parcelize
 data class ImageDTO(
-    val meta: Meta?,
+    val meta: MetaImage?,
     val miniature: Miniature?,
     val tiny: Tiny?
 ): Parcelable
+
+@Parcelize
+data class MetaImage(
+    val downloadHref: String?
+) : Parcelable
 
 @Parcelize
 data class Miniature(

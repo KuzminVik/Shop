@@ -1,6 +1,7 @@
 package ru.geekbrains.shopcatalog.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,8 +16,11 @@ import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.databinding.FragmentMainListBinding
 import ru.geekbrains.shopcatalog.model.Product
 import ru.geekbrains.shopcatalog.model.ProductDTO
+import ru.geekbrains.shopcatalog.utils.logTurnOn
 import ru.geekbrains.shopcatalog.viewmodel.AppState
 import ru.geekbrains.shopcatalog.viewmodel.MainViewModel
+
+private const val TAG ="MainListFragment"
 
 class MainListFragment : Fragment() {
     private var _binding: FragmentMainListBinding? = null
@@ -27,18 +31,19 @@ class MainListFragment : Fragment() {
 //    private val newProductsAdapter = NewProductsRecyclerAdapter()
 
     private val mainListAdapter = MainListRecyclerViewAdapter(
-            object : OnItemViewClickListener{
-        override fun onItemViewClick(product: Product) {
-            activity?.supportFragmentManager?.apply {
-                beginTransaction()
-                        .replace(R.id.container, ProductFragment.newInstance(Bundle().apply {
-                            putParcelable(ProductFragment.BUNDLE_EXTRA, product)
-                        }))
-                        .addToBackStack("")
-                        .commitAllowingStateLoss()
-            }
-        }
-    })
+//            object : OnItemViewClickListener{
+//        override fun onItemViewClick(product: Product) {
+//            activity?.supportFragmentManager?.apply {
+//                beginTransaction()
+//                        .replace(R.id.container, ProductFragment.newInstance(Bundle().apply {
+//                            putParcelable(ProductFragment.BUNDLE_EXTRA, product)
+//                        }))
+//                        .addToBackStack("")
+//                        .commitAllowingStateLoss()
+//            }
+//        }
+//    }
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +62,7 @@ class MainListFragment : Fragment() {
         binding.list.adapter = mainListAdapter
 //        binding.listNewProduct.adapter = newProductsAdapter
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
-        viewModel.getProduct()
+        viewModel.getListProductsFromRemoteSource("productFolder=https://online.moysklad.ru/api/remap/1.2/entity/productfolder/b7af289f-32c2-11e6-7a69-8f55000281bf")
 
 //        val rwNewProduct: RecyclerView = view.findViewById(R.id.list_new_product)
 //        rwNewProduct.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
@@ -82,20 +87,21 @@ class MainListFragment : Fragment() {
 
     private fun renderData(appState: AppState) {
         when (appState) {
-            is AppState.Success -> {
+            is AppState.SuccessList -> {
                 binding.listFragmentLoadingLayout.visibility = View.GONE
 //                newProductsAdapter.setValues(appState.newProductsData)
-                mainListAdapter.setValues(appState.productData)
+                mainListAdapter.setValues(appState.productListData)
+                if(logTurnOn) {Log.d(TAG, "!!!!!!!!!!!!!!!!! mainListAdapter.setValues(appState.productListData)")}
             }
             is AppState.Loading -> {
                 binding.listFragmentLoadingLayout.visibility = View.VISIBLE
             }
-            is AppState.Error -> {
+            is AppState.ErrorList -> {
                 binding.listFragmentLoadingLayout.visibility = View.GONE
                 binding.mainView.showSnackBar(
                         getString(R.string.error),
                         getString(R.string.reload),
-                        { viewModel.getProduct() }
+                        { viewModel.getListProductsFromRemoteSource("productFolder=https://online.moysklad.ru/api/remap/1.2/entity/productfolder/b7af289f-32c2-11e6-7a69-8f55000281bf") }
                 )
             }
         }

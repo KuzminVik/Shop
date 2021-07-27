@@ -27,26 +27,26 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list_new_product"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small"
-                android:layout_marginEnd="@dimen/margin_small"
-                android:layout_marginBottom="@dimen/margin_small"
-                app:layout_constraintBottom_toTopOf="@+id/list"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_new_products" />
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/list_new_product"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_marginStart="@dimen/margin_small"-->
+<!--                android:layout_marginTop="@dimen/margin_small"-->
+<!--                android:layout_marginEnd="@dimen/margin_small"-->
+<!--                android:layout_marginBottom="@dimen/margin_small"-->
+<!--                app:layout_constraintBottom_toTopOf="@+id/list"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/tv_new_products" />-->
 
-                <TextView
-                    android:id="@+id/tv_list_products"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:text="@string/all_product"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tv_list_products"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_small"
+                android:text="@string/all_product"
+                android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list"
@@ -57,9 +57,10 @@
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:layout_constraintTop_toTopOf="parent"
                 app:spanCount="2"
-                tools:context=".view.MainListFragment"
-                tools:layout_editor_absoluteX="16dp"
-                tools:listitem="@layout/main_recycler_item" />
+                tools:context=".view.MainListFragment"/>
+<!--                tools:listitem="@layout/main_recycler_item" -->
+<!--                tools:layout_editor_absoluteX="16dp"-->
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -68,8 +69,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/loadingBackground"
-        android:visibility="gone"
-        tools:visibility="gone">
+        android:visibility="invisible"
+        tools:visibility="invisible">
 
         <include
             android:id="@+id/includedLoadingLayout"

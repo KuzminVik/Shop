@@ -27,6 +27,7 @@ class App: Application() {
                             DataBase::class.java,
                             DB_NAME)
                             .allowMainThreadQueries()
+                            .fallbackToDestructiveMigration()
                             .build()
                     }
                 }

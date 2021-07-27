@@ -1,11 +1,14 @@
 package ru.geekbrains.shopcatalog.repository
 
-import ru.geekbrains.shopcatalog.model.Meta
-import ru.geekbrains.shopcatalog.model.Price
+import retrofit2.Callback
 import ru.geekbrains.shopcatalog.model.Product
-import ru.geekbrains.shopcatalog.model.ProductDTO
+import ru.geekbrains.shopcatalog.model.ProductListDTO
 
-class RepositoryImpl : Repository {
+class RepositoryImpl(private val remoteDataSource: RemoteDataSource) : Repository {
+
+    override fun getListProductsInTheCategory(id: String, callback: Callback<ProductListDTO>) {
+        remoteDataSource.getListProductsInTheCategory(id, callback)
+    }
 
     override fun getProductsFromLocalStorage(): MutableList<Product> {
         val listProduct : MutableList<Product> = ArrayList()

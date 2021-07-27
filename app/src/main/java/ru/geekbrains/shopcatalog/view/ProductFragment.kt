@@ -32,6 +32,7 @@ class ProductFragment : Fragment() {
 
     companion object {
         const val BUNDLE_EXTRA = "product"
+
         fun newInstance(bundle: Bundle) : ProductFragment{
             val fragment = ProductFragment()
             fragment.arguments = bundle
@@ -75,7 +76,7 @@ class ProductFragment : Fragment() {
 
     private fun renderData(appState: AppState) {
         when(appState){
-            is AppState.Success -> {
+            is AppState.SuccessProduct -> {
                 binding.mainView.visibility = View.VISIBLE
                 binding.includedLoadingLayout.loadingLayout.visibility = View.GONE
                 setProduct(appState.productData[0])
@@ -104,7 +105,6 @@ class ProductFragment : Fragment() {
             is AppState.SuccessHistory -> {
                 historyViewedAdapter.setData(appState.historyData)
             }
-
             is AppState.Loading -> {
                 //добавить свой прогресс бар
 //                binding.mainView.visibility = View.GONE
@@ -118,7 +118,6 @@ class ProductFragment : Fragment() {
             is AppState.SuccessImage -> {
                 setImage(appState.imageData[0])
             }
-
             is AppState.Loading -> {
                 //добавить свой прогресс бар
             }
@@ -141,7 +140,7 @@ class ProductFragment : Fragment() {
         val client = OkHttpClient.Builder()
             .addInterceptor(object : Interceptor {
                 @Throws(IOException::class)
-                override fun intercept(chain: Interceptor.Chain): Response? {
+                override fun intercept(chain: Interceptor.Chain): Response {
                     val newRequest: Request = chain.request().newBuilder()
                         .addHeader("Authorization", "Bearer ${BuildConfig.API_AUTHORIZATION}")
                         .build()
