@@ -8,7 +8,7 @@ data class VariantDTO(
         val id : String?,
         val updated : String?,
         val name : String?,
-        val characteristics : ArrayList<Size>,
+        val characteristics : ArrayList<Size>?,
         val productInVariant : ProductInVariant?,
 
 ) : Parcelable

@@ -15,7 +15,6 @@ import com.google.android.material.snackbar.Snackbar
 import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.databinding.FragmentMainListBinding
 import ru.geekbrains.shopcatalog.model.Product
-import ru.geekbrains.shopcatalog.model.ProductDTO
 import ru.geekbrains.shopcatalog.utils.logTurnOn
 import ru.geekbrains.shopcatalog.viewmodel.AppState
 import ru.geekbrains.shopcatalog.viewmodel.MainViewModel
@@ -31,18 +30,19 @@ class MainListFragment : Fragment() {
 //    private val newProductsAdapter = NewProductsRecyclerAdapter()
 
     private val mainListAdapter = MainListRecyclerViewAdapter(
-//            object : OnItemViewClickListener{
-//        override fun onItemViewClick(product: Product) {
-//            activity?.supportFragmentManager?.apply {
-//                beginTransaction()
-//                        .replace(R.id.container, ProductFragment.newInstance(Bundle().apply {
-//                            putParcelable(ProductFragment.BUNDLE_EXTRA, product)
-//                        }))
-//                        .addToBackStack("")
-//                        .commitAllowingStateLoss()
-//            }
-//        }
-//    }
+            object : OnItemViewClickListener{
+        override fun onItemViewClick(product: Product) {
+            parentFragmentManager.apply {
+                beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.container, ProductFragment.newInstance(Bundle().apply {
+                        putParcelable(ProductFragment.BUNDLE_EXTRA, product)
+                    }))
+                    .addToBackStack(null)
+                    .commitAllowingStateLoss()
+            }
+        }
+    }
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

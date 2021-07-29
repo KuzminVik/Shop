@@ -8,12 +8,8 @@
     android:layout_marginStart="@dimen/margin_normal"
     android:layout_marginTop="@dimen/margin_normal"
     android:layout_marginEnd="@dimen/margin_normal"
-    android:layout_marginBottom="@dimen/margin_normal">
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+    android:layout_marginBottom="@dimen/margin_normal"
+    android:background="@color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -111,7 +107,6 @@
                 tools:listitem="@layout/main_recycler_item" />
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
 
     <FrameLayout
         android:id="@+id/loadingLayout"

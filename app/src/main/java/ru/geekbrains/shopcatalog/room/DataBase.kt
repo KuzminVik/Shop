@@ -3,7 +3,13 @@ package ru.geekbrains.shopcatalog.room
 import androidx.room.Database
 import androidx.room.RoomDatabase
 
-@Database(entities = arrayOf(ViewedProductsEntity::class), version = 2, exportSchema = false)
+@Database(entities = [ViewedProductsEntity::class, CategoryEntity::class, ProductEntity::class], version = 3, exportSchema = false)
 abstract class DataBase: RoomDatabase() {
-    abstract fun viewedProductsDAO(): ViewedRroductsDAO
+
+    abstract fun viewedProductsDAO(): ViewedProductsDAO
+
+    abstract fun listProductsDao(): ListProductsDao
+
+    abstract fun listCategoryDAO(): ListCategoryDAO
+
 }

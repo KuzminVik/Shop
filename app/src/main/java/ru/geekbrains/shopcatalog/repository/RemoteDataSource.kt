@@ -26,7 +26,8 @@ class RemoteDataSource {
         .build().create(ProductAPI::class.java)
 
     fun getProductDetails(id: String, callback: Callback<ProductDTO>) {
-        productAPI.getProduct("Bearer ${BuildConfig.API_AUTHORIZATION}", id).enqueue(callback)
+        productAPI.getProduct("Bearer ${BuildConfig.API_AUTHORIZATION}", id)
+            .enqueue(callback)
     }
 
     fun getImagesDetails(id: String, callback: Callback<ImagesFromProductDTO>) {
@@ -37,8 +38,7 @@ class RemoteDataSource {
     fun getListProductsInTheCategory(productFolderId: String, callback: Callback<ProductListDTO>) {
         productAPI.getProductsInTheCategory(
             "Bearer ${BuildConfig.API_AUTHORIZATION}",
-            productFolderId,
-            "positiveOnly",
+            "$productFolderId;quantityMode=positiveOnly",
             "product",
             "supplier,productFolder,images",
             100
@@ -55,7 +55,6 @@ class RemoteDataSource {
     inner class ProductApiInterceptor : Interceptor {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-
             return chain.proceed(chain.request())
         }
     }

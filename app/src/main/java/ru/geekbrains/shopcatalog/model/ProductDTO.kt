@@ -37,3 +37,8 @@ data class PriceDTO(
 data class SupplierDTO(
     val name: String?
 ): Parcelable
+
+@Parcelize
+data class CategoryListDTO(
+    val rows: ArrayList<ProductFolderDTO>?
+): Parcelable
