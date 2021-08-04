@@ -1,4 +1,4 @@
-package ru.geekbrains.shopcatalog.repository
+package ru.geekbrains.shopcatalog.apidata
 
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
@@ -8,12 +8,9 @@ import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.geekbrains.shopcatalog.BuildConfig
-import ru.geekbrains.shopcatalog.model.ImagesFromProductDTO
-import ru.geekbrains.shopcatalog.model.ProductDTO
-import ru.geekbrains.shopcatalog.model.ProductListDTO
 import java.io.IOException
 
-class RemoteDataSource {
+class ApiService {
 
     private val productAPI = Retrofit.Builder()
         .baseUrl("https://online.moysklad.ru/api/remap/1.2/")
@@ -33,6 +30,10 @@ class RemoteDataSource {
     fun getImagesDetails(id: String, callback: Callback<ImagesFromProductDTO>) {
         productAPI.getImagesFromProduct("Bearer ${BuildConfig.API_AUTHORIZATION}", id)
             .enqueue(callback)
+    }
+
+    suspend fun getListCategory(): CategoryListDTO{
+        return productAPI.getListCategory("Bearer ${BuildConfig.API_AUTHORIZATION}")
     }
 
     fun getListProductsInTheCategory(productFolderId: String, callback: Callback<ProductListDTO>) {

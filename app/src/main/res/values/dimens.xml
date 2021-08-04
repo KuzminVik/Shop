@@ -15,5 +15,6 @@
     <dimen name="margin_top_contentLayout">60dp</dimen>
     <dimen name="text_size_10">10sp</dimen>
     <dimen name="margin_8">8dp</dimen>
+    <dimen name="marginFromTheBottom">60dp</dimen>
 
 </resources>

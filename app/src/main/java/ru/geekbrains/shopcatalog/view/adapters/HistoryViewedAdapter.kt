@@ -1,4 +1,4 @@
-package ru.geekbrains.shopcatalog.view
+package ru.geekbrains.shopcatalog.view.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,24 +7,26 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.model.Product
+import ru.geekbrains.shopcatalog.room.ProductEntity
+import ru.geekbrains.shopcatalog.view.MainListFragment
 
 class HistoryViewedAdapter(private var onItemViewClickListener: MainListFragment.OnItemViewClickListener?)
     : RecyclerView.Adapter<HistoryViewedAdapter.RecyclerItemViewHolder>() {
-    private var data: List<Product> = arrayListOf()
+    private var data: List<ProductEntity> = arrayListOf()
 
-    fun setData(data: List<Product>) {
+    fun setData(data: List<ProductEntity>) {
         this.data = data
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewedAdapter.RecyclerItemViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerItemViewHolder {
         return RecyclerItemViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.main_recycler_item, parent, false) as View
         )
     }
 
-    override fun onBindViewHolder(holder: HistoryViewedAdapter.RecyclerItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerItemViewHolder, position: Int) {
         holder.bind(data[position])
     }
 
@@ -33,11 +35,11 @@ class HistoryViewedAdapter(private var onItemViewClickListener: MainListFragment
     }
 
     inner class RecyclerItemViewHolder(view: View) : RecyclerView.ViewHolder(view){
-        fun bind(product: Product) {
+        fun bind(product: ProductEntity) {
             if (layoutPosition != RecyclerView.NO_POSITION) {
                 itemView.apply {
                     findViewById<TextView>(R.id.item_title).text = product.name
-                    findViewById<TextView>(R.id.item_price).text = product.salePrices
+                    findViewById<TextView>(R.id.item_price).text = product.prise
                     setOnClickListener {
                         onItemViewClickListener?.onItemViewClick(product)
                     }

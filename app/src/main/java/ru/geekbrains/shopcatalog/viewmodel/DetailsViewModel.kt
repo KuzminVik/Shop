@@ -3,45 +3,43 @@ package ru.geekbrains.shopcatalog.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import retrofit2.Call
-import ru.geekbrains.shopcatalog.model.ProductDTO
 import retrofit2.Callback
 import retrofit2.Response
-import ru.geekbrains.shopcatalog.app.App.Companion.getHistoryDao
-import ru.geekbrains.shopcatalog.model.ImagesFromProductDTO
+import ru.geekbrains.shopcatalog.apidata.*
 import ru.geekbrains.shopcatalog.model.Product
 import ru.geekbrains.shopcatalog.repository.*
-import ru.geekbrains.shopcatalog.room.LocalRepository
-import ru.geekbrains.shopcatalog.room.LocalRepositoryImpl
-import ru.geekbrains.shopcatalog.utils.convertImagesDtoToModel
-import ru.geekbrains.shopcatalog.utils.convertProductDtoToModel
+import ru.geekbrains.shopcatalog.localdata.DatabaseHelper
+import ru.geekbrains.shopcatalog.localdata.DatabaseHelperImpl
+import ru.geekbrains.shopcatalog.room.ProductEntity
+import ru.geekbrains.shopcatalog.utils.*
 
 private const val SERVER_ERROR = "Ошибка сервера"
 private const val REQUEST_ERROR = "Ошибка запроса на сервер"
 private const val CORRUPTED_DATA = "Неполные данные"
 
 class DetailsViewModel(
-        val detailsLiveData: MutableLiveData<AppState> = MutableLiveData(),
-        val imageLiveData: MutableLiveData<AppState> = MutableLiveData(),
-        val historyLiveData: MutableLiveData<AppState> = MutableLiveData(),
-        private val detailsRepositoryImpl: DetailsRepository = DetailsRepositoryImpl(RemoteDataSource()),
-        private val historyRepository: LocalRepository = LocalRepositoryImpl(getHistoryDao())
+    private val apiHelper: ApiHelper = ApiHelperImpl(ApiService()),
+    private val dbHelper: DatabaseHelper
 ): ViewModel() {
 
+    val imageLiveData: MutableLiveData<AppState> = MutableLiveData()
+    val historyLiveData: MutableLiveData<AppState> = MutableLiveData()
+    val detailsLiveData: MutableLiveData<AppState> = MutableLiveData()
     fun getProductLiveData() = detailsLiveData
 
-    fun getProductFromRemoteSource(id: String) {
+    fun getProductFromApi(id: String) {
         detailsLiveData.value = AppState.Loading
-        detailsRepositoryImpl.getProductFromServer(id, callBackProduct)
-        detailsRepositoryImpl.getImagesFromServer(id, callBackImages)
+        apiHelper.getProductFromServer(id, callBackProduct)
+        apiHelper.getImagesFromServer(id, callBackImages)
     }
 
-    fun saveHistoryProductToToDB(product: Product) {
-        historyRepository.saveEntity(product)
+    fun saveHistoryProductToToDB(product: ProductEntity) {
+        dbHelper.saveViewedProduct(product)
     }
 
     fun getAllHistory() {
         historyLiveData.value = AppState.Loading
-        historyLiveData.value = AppState.SuccessHistory(historyRepository.getAllHistoryViewed())
+        historyLiveData.value = AppState.SuccessHistory(dbHelper.getAllHistoryViewed())
     }
 
     private val callBackProduct = object:  Callback<ProductDTO> {
@@ -61,10 +59,10 @@ class DetailsViewModel(
 
         private fun checkResponseProductDTO(serverResponse: ProductDTO): AppState {
             val prod = serverResponse
-            return if (prod.id == null || prod.name == null || prod.description == null || prod.salePrices?.get(0)?.value == null) {
+            return if (prod.id == "" || prod.name == "" || prod.description == "" || prod.salePrices[0].value.toString() == "") {
                 AppState.Error(Throwable(CORRUPTED_DATA))
             } else {
-                AppState.SuccessProduct(convertProductDtoToModel(serverResponse))
+                AppState.SuccessProduct(convertProductDtoToEntity(serverResponse))
             }
         }
     }
@@ -87,8 +85,8 @@ class DetailsViewModel(
 
         private fun checkResponseImages(serverResponse: ImagesFromProductDTO): AppState {
             val img = serverResponse
-            val index = img.rows?.get(0)
-            return if (index!!.meta!!.downloadHref == null || index.miniature == null || index.tiny == null) {
+            val index = img.rows[0]
+            return if (index.meta.downloadHref == "" || index.miniature.href == "" || index.tiny.href == "") {
                 AppState.Error(Throwable(CORRUPTED_DATA))
             } else {
                 AppState.SuccessImage(convertImagesDtoToModel(serverResponse))

@@ -1,11 +1,14 @@
-package ru.geekbrains.shopcatalog.repository
+package ru.geekbrains.shopcatalog.apidata
 
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
-import ru.geekbrains.shopcatalog.model.*
+import ru.geekbrains.shopcatalog.apidata.CategoryListDTO
+import ru.geekbrains.shopcatalog.apidata.ImagesFromProductDTO
+import ru.geekbrains.shopcatalog.apidata.ProductDTO
+import ru.geekbrains.shopcatalog.apidata.ProductListDTO
 
 interface ProductAPI {
 
@@ -31,9 +34,9 @@ interface ProductAPI {
     ): Call<ProductListDTO>
 
     @GET("entity/productfolder")
-    fun getListCategory(
+    suspend fun getListCategory(
         @Header("Authorization")  token: String
-    ): Call<CategoryListDTO>
+    ): CategoryListDTO
 
 
 //    @GET("entity/variant/{id}")

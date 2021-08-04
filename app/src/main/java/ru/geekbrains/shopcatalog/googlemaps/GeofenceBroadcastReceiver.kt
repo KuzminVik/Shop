@@ -17,7 +17,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
 
-        if (context != null) {
+        if (context != null && intent != null) {
             val geofencingEvent = GeofencingEvent.fromIntent(intent)
             val geofencingTransition = geofencingEvent.geofenceTransition
 
@@ -25,21 +25,20 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 geofencingTransition == Geofence.GEOFENCE_TRANSITION_DWELL
             ) {
                 // Retrieve data from intent
-                if (intent != null) {
-                    key = intent.getStringExtra("key")!!
-                    text = intent.getStringExtra("message")!!
-                    GoogleMapsFragment
-                        .showNotification(
-                            context.applicationContext,
-                            text
-                        )
-                } else{
-                    if(logTurnOn) Log.d(TAG, "intent == null")
-                }
+
+                key = intent.getStringExtra("key")!!
+                text = intent.getStringExtra("message")!!
+                GoogleMapsFragment
+                    .showNotification(
+                        context.applicationContext,
+                        text
+                    )
 
                 // remove geofence
                 val triggeringGeofences = geofencingEvent.triggeringGeofences
                 GoogleMapsFragment.removeGeofences(context, triggeringGeofences)
+            } else {
+                if (logTurnOn) Log.d(TAG, "intent == null")
             }
         }
     }

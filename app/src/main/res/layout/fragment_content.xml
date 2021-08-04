@@ -10,7 +10,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mainView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/marginFromTheBottom">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -19,12 +20,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="SpeakableTextPresentCheck">
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
         </androidx.core.widget.NestedScrollView>
 
@@ -46,6 +48,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/floatingactionbutton"
         app:layout_anchor="@id/bottom_app_bar"
-        app:srcCompat="@drawable/ic_plus_fab" />
+        app:srcCompat="@drawable/ic_plus_fab"
+        tools:ignore="ImageContrastCheck" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

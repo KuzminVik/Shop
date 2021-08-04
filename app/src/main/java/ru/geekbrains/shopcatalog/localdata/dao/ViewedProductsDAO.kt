@@ -1,6 +1,7 @@
-package ru.geekbrains.shopcatalog.room
+package ru.geekbrains.shopcatalog.localdata.dao
 
 import androidx.room.*
+import ru.geekbrains.shopcatalog.localdata.entity.ViewedProductsEntity
 
 @Dao
 interface ViewedProductsDAO {

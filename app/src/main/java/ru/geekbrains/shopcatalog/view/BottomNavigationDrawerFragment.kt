@@ -11,6 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.databinding.FragmentBottomNavigationDrawerBinding
 import ru.geekbrains.shopcatalog.googlemaps.GoogleMapsFragment
+import ru.geekbrains.shopcatalog.utils.toast
 
 class BottomNavigationDrawerFragment : BottomSheetDialogFragment() {
 
@@ -26,37 +27,25 @@ class BottomNavigationDrawerFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.action_settings -> {
-                    // открыть фрагмент в контейнере
-                }
-                R.id.action_main -> {
-//                childFragmentManager.beginTransaction()
-//                    .replace(R.id.container, ProductFragment.newInstance())
-//                        .commitNow()
-                }
-                R.id.action_favorite -> {
-                    // открыть фрагмент в контейнере
-                }
+                R.id.action_settings -> toast("CLIC!!!")
+                R.id.action_main ->
+                    addFragment(CategoriesFragment())
+                R.id.action_favorite -> toast("CLIC!!!")
                 R.id.action_contacts -> toast("CLIC!!!")
-
                 R.id.action_geolocation ->
-                    parentFragmentManager.apply {
-                        beginTransaction()
-                            .add(R.id.container, GoogleMapsFragment())
-                            .addToBackStack("GoogleMapsFragment")
-                            .commitAllowingStateLoss()
-                    }
-
+                    addFragment(GoogleMapsFragment())
             }
             true
         }
     }
 
-    private fun Fragment.toast(string: String?) {
-        Toast.makeText(context, string, Toast.LENGTH_SHORT).apply {
-            setGravity(Gravity.BOTTOM, 0, 250)
-            show()
-        }
+    private fun addFragment(fragment: Fragment) {
+        parentFragmentManager
+            .beginTransaction()
+            .setCustomAnimations(R.anim.design_bottom_sheet_slide_in, R.anim.design_bottom_sheet_slide_out)
+            .replace(R.id.container, fragment, fragment.javaClass.getSimpleName())
+            .addToBackStack(fragment.javaClass.getSimpleName())
+            .commit()
     }
 
 }

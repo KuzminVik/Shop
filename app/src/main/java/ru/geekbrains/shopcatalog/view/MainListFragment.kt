@@ -10,14 +10,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.snackbar.Snackbar
+import androidx.lifecycle.ViewModelProviders
 import ru.geekbrains.shopcatalog.R
+import ru.geekbrains.shopcatalog.apidata.ApiHelperImpl
+import ru.geekbrains.shopcatalog.apidata.ApiService
 import ru.geekbrains.shopcatalog.databinding.FragmentMainListBinding
-import ru.geekbrains.shopcatalog.model.Product
+import ru.geekbrains.shopcatalog.localdata.DatabaseBuilder
+import ru.geekbrains.shopcatalog.localdata.DatabaseHelperImpl
+import ru.geekbrains.shopcatalog.room.ProductEntity
 import ru.geekbrains.shopcatalog.utils.logTurnOn
-import ru.geekbrains.shopcatalog.viewmodel.AppState
+import ru.geekbrains.shopcatalog.utils.AppState
+import ru.geekbrains.shopcatalog.utils.showSnackBar
+import ru.geekbrains.shopcatalog.view.adapters.MainListRecyclerViewAdapter
 import ru.geekbrains.shopcatalog.viewmodel.MainViewModel
+import ru.geekbrains.shopcatalog.viewmodel.ViewModelFactory
 
 private const val TAG ="MainListFragment"
 
@@ -25,13 +31,13 @@ class MainListFragment : Fragment() {
     private var _binding: FragmentMainListBinding? = null
     private val binding get() = _binding!!
     private var columnCount = 2
-    private val viewModel: MainViewModel by lazy {ViewModelProvider(this).get(MainViewModel::class.java)}
-
+//    private val viewModel: MainViewModel by lazy {ViewModelProvider(this).get(MainViewModel::class.java)}
+    private lateinit var viewModel: MainViewModel
 //    private val newProductsAdapter = NewProductsRecyclerAdapter()
 
     private val mainListAdapter = MainListRecyclerViewAdapter(
             object : OnItemViewClickListener{
-        override fun onItemViewClick(product: Product) {
+        override fun onItemViewClick(product: ProductEntity) {
             parentFragmentManager.apply {
                 beginTransaction()
                     .setReorderingAllowed(true)
@@ -59,10 +65,12 @@ class MainListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupViewModel()
+
         binding.list.adapter = mainListAdapter
 //        binding.listNewProduct.adapter = newProductsAdapter
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
-        viewModel.getListProductsFromRemoteSource("productFolder=https://online.moysklad.ru/api/remap/1.2/entity/productfolder/b7af289f-32c2-11e6-7a69-8f55000281bf")
+        viewModel.getListProductsFromApi("productFolder=https://online.moysklad.ru/api/remap/1.2/entity/productfolder/b7af289f-32c2-11e6-7a69-8f55000281bf")
 
 //        val rwNewProduct: RecyclerView = view.findViewById(R.id.list_new_product)
 //        rwNewProduct.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
@@ -91,7 +99,7 @@ class MainListFragment : Fragment() {
                 binding.listFragmentLoadingLayout.visibility = View.GONE
 //                newProductsAdapter.setValues(appState.newProductsData)
                 mainListAdapter.setValues(appState.productListData)
-                if(logTurnOn) {Log.d(TAG, "!!!!!!!!!!!!!!!!! mainListAdapter.setValues(appState.productListData)")}
+                if(logTurnOn) {Log.d(TAG, "!!! mainListAdapter.setValues(appState.productListData)")}
             }
             is AppState.Loading -> {
                 binding.listFragmentLoadingLayout.visibility = View.VISIBLE
@@ -101,10 +109,21 @@ class MainListFragment : Fragment() {
                 binding.mainView.showSnackBar(
                         getString(R.string.error),
                         getString(R.string.reload),
-                        { viewModel.getListProductsFromRemoteSource("productFolder=https://online.moysklad.ru/api/remap/1.2/entity/productfolder/b7af289f-32c2-11e6-7a69-8f55000281bf") }
+                        { viewModel.getListProductsFromApi("productFolder=https://online.moysklad.ru/api/remap/1.2/entity/productfolder/b7af289f-32c2-11e6-7a69-8f55000281bf") }
                 )
             }
         }
+    }
+
+    fun setupViewModel(){
+        viewModel = ViewModelProviders.of(
+            this,
+            ViewModelFactory(
+                ApiHelperImpl(ApiService()),
+                DatabaseHelperImpl(DatabaseBuilder.getInstance(requireContext()))
+
+            )
+        ).get(MainViewModel::class.java)
     }
 
     override fun onDestroyView() {
@@ -113,14 +132,6 @@ class MainListFragment : Fragment() {
     }
 
     interface OnItemViewClickListener {
-        fun onItemViewClick(product: Product)
+        fun onItemViewClick(product: ProductEntity)
     }
-}
-
-fun View.showSnackBar(
-        text: String,
-        actionText: String,
-        action: (View) -> Unit,
-        length: Int = Snackbar.LENGTH_INDEFINITE) {
-    Snackbar.make(this, text, length).setAction(actionText, action).show()
 }

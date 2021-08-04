@@ -1,14 +1,16 @@
-package ru.geekbrains.shopcatalog.room
+package ru.geekbrains.shopcatalog.localdata.entity
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity
 data class ViewedProductsEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long,
+    @PrimaryKey()
     val id_product: String,
     val name: String,
     val description: String,
     val prise: String
-)
+): Parcelable
