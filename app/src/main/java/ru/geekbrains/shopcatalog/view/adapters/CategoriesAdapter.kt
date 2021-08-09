@@ -3,13 +3,11 @@ package ru.geekbrains.shopcatalog.view.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.databinding.ItemRvLayoutBinding
 import ru.geekbrains.shopcatalog.room.CategoryEntity
 
-class CategoriesAdapter(): RecyclerView.Adapter<CategoriesAdapter.DataViewHolder>() {
+class CategoriesAdapter(private var onItemViewClickListener: OnItemViewClickListenerProducts): RecyclerView.Adapter<CategoriesAdapter.DataViewHolder>() {
 
     private var categories: List<Pair<CategoryEntity, Int>> = listOf()
 
@@ -18,7 +16,7 @@ class CategoriesAdapter(): RecyclerView.Adapter<CategoriesAdapter.DataViewHolder
         notifyDataSetChanged()
     }
 
-    inner class DataViewHolder(val binding: ItemRvLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class DataViewHolder(private val binding: ItemRvLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(category: Pair<CategoryEntity, Int>) {
             when(category.second){
                 1 ->{
@@ -30,13 +28,21 @@ class CategoriesAdapter(): RecyclerView.Adapter<CategoriesAdapter.DataViewHolder
                     binding.tvName2.text = category.first.name
                     binding.tvName1.visibility = View.GONE
                     binding.tvName3.visibility = View.GONE
+                    itemView.apply { setOnClickListener {
+                        onItemViewClickListener.onItemViewClick(category.first.id_category)
+                    } }
                 }
                 3 ->{
                     binding.tvName3.text = category.first.name
                     binding.tvName1.visibility = View.GONE
                     binding.tvName2.visibility = View.GONE
+                    itemView.apply { setOnClickListener {
+                        onItemViewClickListener.onItemViewClick(category.first.id_category)
+                    } }
                 }
             }
+
+
         }
     }
 

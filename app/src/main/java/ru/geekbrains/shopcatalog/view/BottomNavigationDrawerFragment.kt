@@ -1,5 +1,6 @@
 package ru.geekbrains.shopcatalog.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Gravity
 import androidx.fragment.app.Fragment
@@ -7,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.databinding.FragmentBottomNavigationDrawerBinding
@@ -18,7 +21,7 @@ class BottomNavigationDrawerFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentBottomNavigationDrawerBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentBottomNavigationDrawerBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -35,6 +38,10 @@ class BottomNavigationDrawerFragment : BottomSheetDialogFragment() {
                 R.id.action_geolocation ->
                     addFragment(GoogleMapsFragment())
             }
+//            binding.navigationView.visibility = View.GONE
+            DrawerLayout(requireContext()).closeDrawers()
+//            val dv: DrawerLayout = view.findViewById(R.id.drawer_layout)
+//            dv.closeDrawers()
             true
         }
     }

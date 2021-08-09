@@ -11,6 +11,7 @@ import androidx.fragment.app.commit
 import com.google.android.material.bottomappbar.BottomAppBar
 import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.databinding.FragmentContentBinding
+import ru.geekbrains.shopcatalog.utils.COLUMN_COUNT_BASE
 import ru.geekbrains.shopcatalog.utils.toast
 
 class ContentFragment : Fragment() {
@@ -18,10 +19,7 @@ class ContentFragment : Fragment() {
     private var _binding: FragmentContentBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentContentBinding.inflate(inflater, container, false)
         return binding.root
@@ -33,7 +31,8 @@ class ContentFragment : Fragment() {
         if (savedInstanceState == null) {
             parentFragmentManager.commit {
                 setReorderingAllowed(true)
-                replace(R.id.container, MainListFragment())
+                replace(R.id.container, MainListFragment.newInstance(COLUMN_COUNT_BASE, "b7af289f-32c2-11e6-7a69-8f55000281bf"))
+
                 addToBackStack("MainListFragment")
             }
         }

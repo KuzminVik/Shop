@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
@@ -24,9 +23,11 @@ import ru.geekbrains.shopcatalog.localdata.DatabaseHelperImpl
 import ru.geekbrains.shopcatalog.model.Image
 import ru.geekbrains.shopcatalog.room.ProductEntity
 import ru.geekbrains.shopcatalog.utils.AppState
+import ru.geekbrains.shopcatalog.utils.OkHttpInstance
+import ru.geekbrains.shopcatalog.utils.picasso
 import ru.geekbrains.shopcatalog.utils.showSnackBar
 import ru.geekbrains.shopcatalog.view.adapters.HistoryViewedAdapter
-import ru.geekbrains.shopcatalog.viewmodel.CategoriesViewModel
+import ru.geekbrains.shopcatalog.view.adapters.OnItemViewClickListener
 import ru.geekbrains.shopcatalog.viewmodel.DetailsViewModel
 import ru.geekbrains.shopcatalog.viewmodel.ViewModelFactory
 
@@ -47,7 +48,7 @@ class ProductFragment : Fragment() {
     }
 
     private val historyViewedAdapter: HistoryViewedAdapter by lazy { HistoryViewedAdapter(
-        object : MainListFragment.OnItemViewClickListener {
+        object : OnItemViewClickListener {
             override fun onItemViewClick(product: ProductEntity) {
                 activity?.supportFragmentManager?.apply {
                     beginTransaction()
@@ -161,19 +162,7 @@ class ProductFragment : Fragment() {
     }
 
     private fun setImage(img: Image){
-        val client = OkHttpClient.Builder()
-            .addInterceptor(Interceptor { chain ->
-                val newRequest: Request = chain.request().newBuilder()
-                    .addHeader("Authorization", "Bearer ${BuildConfig.API_AUTHORIZATION}")
-                    .build()
-                chain.proceed(newRequest)
-            })
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            .build()
-        val picasso = Picasso.Builder(this.requireContext())
-            .downloader(OkHttp3Downloader(client))
-            .build()
-        picasso
+        picasso()
             .load(img.original)
             .into(binding.ivFirst)
     }

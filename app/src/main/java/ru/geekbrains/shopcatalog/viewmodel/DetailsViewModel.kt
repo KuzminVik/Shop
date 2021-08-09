@@ -6,10 +6,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.geekbrains.shopcatalog.apidata.*
-import ru.geekbrains.shopcatalog.model.Product
-import ru.geekbrains.shopcatalog.repository.*
 import ru.geekbrains.shopcatalog.localdata.DatabaseHelper
-import ru.geekbrains.shopcatalog.localdata.DatabaseHelperImpl
 import ru.geekbrains.shopcatalog.room.ProductEntity
 import ru.geekbrains.shopcatalog.utils.*
 

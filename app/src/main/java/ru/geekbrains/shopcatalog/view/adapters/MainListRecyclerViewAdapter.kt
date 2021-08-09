@@ -4,13 +4,15 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import ru.geekbrains.shopcatalog.R
-import ru.geekbrains.shopcatalog.model.Product
 import ru.geekbrains.shopcatalog.room.ProductEntity
+import ru.geekbrains.shopcatalog.utils.picasso
+import ru.geekbrains.shopcatalog.utils.picassoViewHolder
 import ru.geekbrains.shopcatalog.view.MainListFragment
 
-class MainListRecyclerViewAdapter(private var onItemViewClickListener: MainListFragment.OnItemViewClickListener?) :
+class MainListRecyclerViewAdapter(private var onItemViewClickListener: OnItemViewClickListener) :
         RecyclerView.Adapter<MainListRecyclerViewAdapter.ViewHolder>() {
 
     private var values: List<ProductEntity> = listOf()
@@ -37,8 +39,12 @@ class MainListRecyclerViewAdapter(private var onItemViewClickListener: MainListF
             itemView.apply {
                 findViewById<TextView>(R.id.item_title).text = product.name
                 findViewById<TextView>(R.id.item_price).text = product.prise
+                picassoViewHolder()
+                    .load(product.imgMiniature)
+                    .placeholder(R.drawable.logo_mini)
+                    .into(findViewById<ImageView>(R.id.item_image))
                 setOnClickListener {
-                    onItemViewClickListener?.onItemViewClick(product)
+                    onItemViewClickListener.onItemViewClick(product)
                 }
             }
         }

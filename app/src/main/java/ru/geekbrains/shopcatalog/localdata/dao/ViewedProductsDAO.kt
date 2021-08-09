@@ -7,7 +7,7 @@ import ru.geekbrains.shopcatalog.localdata.entity.ViewedProductsEntity
 interface ViewedProductsDAO {
 
     @Query("SELECT * FROM ViewedProductsEntity")
-    fun detAllViewedProduct(): List<ViewedProductsEntity>
+    fun getAllViewedProduct(): List<ViewedProductsEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertViewedProduct(entity: ViewedProductsEntity)

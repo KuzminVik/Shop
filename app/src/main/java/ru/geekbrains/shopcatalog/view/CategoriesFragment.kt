@@ -10,15 +10,18 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.apidata.ApiHelperImpl
 import ru.geekbrains.shopcatalog.apidata.ApiService
 import ru.geekbrains.shopcatalog.databinding.CategoriesFragmentBinding
 import ru.geekbrains.shopcatalog.localdata.DatabaseBuilder
 import ru.geekbrains.shopcatalog.localdata.DatabaseHelperImpl
 import ru.geekbrains.shopcatalog.room.CategoryEntity
+import ru.geekbrains.shopcatalog.utils.COLUMN_COUNT_BASE
 import ru.geekbrains.shopcatalog.utils.Status
 import ru.geekbrains.shopcatalog.utils.logTurnOn
 import ru.geekbrains.shopcatalog.view.adapters.CategoriesAdapter
+import ru.geekbrains.shopcatalog.view.adapters.OnItemViewClickListenerProducts
 import ru.geekbrains.shopcatalog.viewmodel.CategoriesViewModel
 import ru.geekbrains.shopcatalog.viewmodel.ViewModelFactory
 
@@ -49,7 +52,17 @@ class CategoriesFragment : Fragment() {
     private fun setupUI() {
         val rv = binding.recyclerView
         rv.layoutManager = LinearLayoutManager(requireView().context)
-        adapter = CategoriesAdapter()
+        adapter = CategoriesAdapter(object : OnItemViewClickListenerProducts {
+            override fun onItemViewClick(id: String) {
+                parentFragmentManager.apply {
+                    beginTransaction()
+                        .setReorderingAllowed(true)
+                        .replace(R.id.container, MainListFragment.newInstance(COLUMN_COUNT_BASE, id))
+                        .addToBackStack("MainListFragment.newInstance")
+                        .commitAllowingStateLoss()
+                }
+            }
+        })
         rv.addItemDecoration(
             DividerItemDecoration(rv.context, (rv.layoutManager as LinearLayoutManager).orientation)
         )
@@ -61,14 +74,9 @@ class CategoriesFragment : Fragment() {
             when (it.status) {
                 Status.SUCCESS -> {
                     binding.progressBar.visibility = View.GONE
-
                     it.data?.let { categories ->
-                        if (logTurnOn) {
-                            Log.d(TAG, "Категории пришли из SUCCESS ${categories.size}")
-                        }
                         renderList(categories)
                     }
-
                     binding.recyclerView.visibility = View.VISIBLE
                 }
                 Status.LOADING -> {

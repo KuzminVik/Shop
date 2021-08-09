@@ -14,12 +14,12 @@ fun convertProductDtoToEntity(el: ProductDTO): ProductEntity{
         el.name,
         el.description,
         el.productFolder.name ?: "???",
-        if(el.images.rows.size >= 1){el.images.rows[0].meta.downloadHref}
-            else{"error images.rows.size == 0"},
-        if(el.images.rows.size >= 1){el.images.rows[0].miniature.href}
-            else{ "error images.rows.size == 0"},
-        if(el.images.rows.size >= 1){el.images.rows[0].tiny.href}
-            else{ "error images.rows.size == 0"},
+        if(el.images.rows == null){"error el.images.rows == null"}else{
+            el.images.rows[0].meta.downloadHref},
+        if(el.images.rows == null){"error el.images.rows == null"}else{
+            el.images.rows[0].miniature.href},
+        if(el.images.rows == null){"error el.images.rows == null"}else{
+            el.images.rows[0].tiny.href},
         el.supplier?.name ?: "???",
         el.salePrices[0].value.toString(),
         el.stock.toString()
@@ -34,12 +34,12 @@ fun convertListProductDtoToEntity(listProd: ProductListDTO): List<ProductEntity>
                 el.name,
                 el.description,
                 el.productFolder.name ?: "???",
-                if(el.images.rows.size >= 1){el.images.rows[0].meta.downloadHref}
-                else{"error images.rows.size == 0"},
-                if(el.images.rows.size >= 1){el.images.rows[0].miniature.href}
-                else{ "error images.rows.size == 0"},
-                if(el.images.rows.size >= 1){el.images.rows[0].tiny.href}
-                else{ "error images.rows.size == 0"},
+                if(el.images.rows?.isEmpty()){"error el.images.rows == null"}else{
+                    el.images.rows[0].meta.downloadHref},
+                if(el.images.rows == null && el.images.rows.isEmpty()){"error el.images.rows == null"}else{
+                    el.images.rows[0].miniature.href},
+                if(el.images.rows == null && el.images.rows.isEmpty()){"error el.images.rows == null"}else{
+                    el.images.rows[0].tiny.href},
                 el.supplier?.name ?: "???",
                 el.salePrices[0].value.toString(),
                 el.stock.toString()

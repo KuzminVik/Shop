@@ -14,7 +14,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/item_image"
+            android:id="@+id/item_image_n"
             android:layout_width="80dp"
             android:layout_height="110dp"
             android:layout_marginStart="8dp"
@@ -26,7 +26,7 @@
             app:srcCompat="@drawable/test_mini" />
 
         <TextView
-            android:id="@+id/item_price"
+            android:id="@+id/item_price_n"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
@@ -37,10 +37,10 @@
             android:textSize="@dimen/text_size_10"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_title" />
+            app:layout_constraintTop_toBottomOf="@+id/item_title_n" />
 
         <TextView
-            android:id="@+id/item_title"
+            android:id="@+id/item_title_n"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
@@ -51,7 +51,7 @@
             android:textSize="@dimen/text_size_10"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_image" />
+            app:layout_constraintTop_toBottomOf="@+id/item_image_n" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

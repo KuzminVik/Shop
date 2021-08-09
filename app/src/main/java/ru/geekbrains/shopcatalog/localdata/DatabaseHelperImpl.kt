@@ -11,7 +11,7 @@ private val appDatabase: AppDatabase
     ) : DatabaseHelper {
 
     override fun getAllHistoryViewed(): List<ProductEntity> {
-        val res = appDatabase.viewedProductsDAO().detAllViewedProduct()
+        val res = appDatabase.viewedProductsDAO().getAllViewedProduct()
         if (res.size>6) appDatabase.viewedProductsDAO().deleteViewedProduct(res.first())
         return convertHistoryEntityToProduct(res)
     }

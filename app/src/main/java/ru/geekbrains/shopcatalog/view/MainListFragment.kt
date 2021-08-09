@@ -21,22 +21,25 @@ import ru.geekbrains.shopcatalog.room.ProductEntity
 import ru.geekbrains.shopcatalog.utils.logTurnOn
 import ru.geekbrains.shopcatalog.utils.AppState
 import ru.geekbrains.shopcatalog.utils.showSnackBar
+import ru.geekbrains.shopcatalog.utils.toast
 import ru.geekbrains.shopcatalog.view.adapters.MainListRecyclerViewAdapter
+import ru.geekbrains.shopcatalog.view.adapters.OnItemViewClickListener
 import ru.geekbrains.shopcatalog.viewmodel.MainViewModel
 import ru.geekbrains.shopcatalog.viewmodel.ViewModelFactory
 
 private const val TAG ="MainListFragment"
+private const val NO_DATA = "Извините, товары в этой категорииотсутствуют."
 
 class MainListFragment : Fragment() {
     private var _binding: FragmentMainListBinding? = null
     private val binding get() = _binding!!
+    private var idCateggory = ""
     private var columnCount = 2
-//    private val viewModel: MainViewModel by lazy {ViewModelProvider(this).get(MainViewModel::class.java)}
     private lateinit var viewModel: MainViewModel
 //    private val newProductsAdapter = NewProductsRecyclerAdapter()
 
     private val mainListAdapter = MainListRecyclerViewAdapter(
-            object : OnItemViewClickListener{
+            object : OnItemViewClickListener {
         override fun onItemViewClick(product: ProductEntity) {
             parentFragmentManager.apply {
                 beginTransaction()
@@ -44,7 +47,7 @@ class MainListFragment : Fragment() {
                     .replace(R.id.container, ProductFragment.newInstance(Bundle().apply {
                         putParcelable(ProductFragment.BUNDLE_EXTRA, product)
                     }))
-                    .addToBackStack(null)
+                    .addToBackStack("ProductFragment.newInstance")
                     .commitAllowingStateLoss()
             }
         }
@@ -54,6 +57,7 @@ class MainListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
+            idCateggory = it.getString(BUNDLE_EXTRA).toString()
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
     }
@@ -70,7 +74,7 @@ class MainListFragment : Fragment() {
         binding.list.adapter = mainListAdapter
 //        binding.listNewProduct.adapter = newProductsAdapter
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
-        viewModel.getListProductsFromApi("productFolder=https://online.moysklad.ru/api/remap/1.2/entity/productfolder/b7af289f-32c2-11e6-7a69-8f55000281bf")
+        viewModel.getListProductsFromApi("productFolder=https://online.moysklad.ru/api/remap/1.2/entity/productfolder/$idCateggory")
 
 //        val rwNewProduct: RecyclerView = view.findViewById(R.id.list_new_product)
 //        rwNewProduct.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
@@ -84,11 +88,13 @@ class MainListFragment : Fragment() {
 
     companion object {
         const val ARG_COLUMN_COUNT = "column-count"
+        private const val BUNDLE_EXTRA = "id-category"
         @JvmStatic
-        fun newInstance(columnCount: Int) =
+        fun newInstance(columnCount: Int, id:String) =
             MainListFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_COLUMN_COUNT, columnCount)
+                    putString(BUNDLE_EXTRA, id)
                 }
             }
     }
@@ -106,11 +112,11 @@ class MainListFragment : Fragment() {
             }
             is AppState.ErrorList -> {
                 binding.listFragmentLoadingLayout.visibility = View.GONE
-                binding.mainView.showSnackBar(
-                        getString(R.string.error),
-                        getString(R.string.reload),
-                        { viewModel.getListProductsFromApi("productFolder=https://online.moysklad.ru/api/remap/1.2/entity/productfolder/b7af289f-32c2-11e6-7a69-8f55000281bf") }
-                )
+                toast(NO_DATA)
+//                binding.mainView.showSnackBar(
+//                        getString(R.string.error), getString(R.string.ok),
+//                        {  }
+//                )
             }
         }
     }
@@ -131,7 +137,4 @@ class MainListFragment : Fragment() {
         _binding = null
     }
 
-    interface OnItemViewClickListener {
-        fun onItemViewClick(product: ProductEntity)
-    }
 }

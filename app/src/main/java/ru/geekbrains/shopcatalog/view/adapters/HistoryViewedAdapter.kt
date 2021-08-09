@@ -3,14 +3,16 @@ package ru.geekbrains.shopcatalog.view.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.model.Product
 import ru.geekbrains.shopcatalog.room.ProductEntity
+import ru.geekbrains.shopcatalog.utils.picassoViewHolder
 import ru.geekbrains.shopcatalog.view.MainListFragment
 
-class HistoryViewedAdapter(private var onItemViewClickListener: MainListFragment.OnItemViewClickListener?)
+class HistoryViewedAdapter(private var onItemViewClickListener: OnItemViewClickListener?)
     : RecyclerView.Adapter<HistoryViewedAdapter.RecyclerItemViewHolder>() {
     private var data: List<ProductEntity> = arrayListOf()
 
@@ -40,6 +42,10 @@ class HistoryViewedAdapter(private var onItemViewClickListener: MainListFragment
                 itemView.apply {
                     findViewById<TextView>(R.id.item_title).text = product.name
                     findViewById<TextView>(R.id.item_price).text = product.prise
+                    picassoViewHolder()
+                        .load(product.imgMiniature)
+                        .placeholder(R.drawable.logo_mini)
+                        .into(findViewById<ImageView>(R.id.item_image))
                     setOnClickListener {
                         onItemViewClickListener?.onItemViewClick(product)
                     }
