@@ -46,6 +46,16 @@ class ApiService {
         ).enqueue(callback)
     }
 
+    suspend fun getListProducts(id: String): ProductListDTO {
+        return productAPI.getListProducts(
+            "Bearer ${BuildConfig.API_AUTHORIZATION}",
+            "$id;quantityMode=positiveOnly",
+            "product",
+            "supplier,productFolder,images",
+            100
+        )
+    }
+
     private fun createOkHttpClient(interceptor: Interceptor): OkHttpClient {
         val httpClient = OkHttpClient.Builder()
         httpClient.addInterceptor(interceptor)

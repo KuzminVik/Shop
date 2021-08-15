@@ -7,13 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import com.squareup.picasso.OkHttp3Downloader
-import com.squareup.picasso.Picasso
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.logging.HttpLoggingInterceptor
-import ru.geekbrains.shopcatalog.BuildConfig
 import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.apidata.ApiHelperImpl
 import ru.geekbrains.shopcatalog.apidata.ApiService
@@ -21,9 +14,9 @@ import ru.geekbrains.shopcatalog.databinding.ProductFragmentBinding
 import ru.geekbrains.shopcatalog.localdata.DatabaseBuilder
 import ru.geekbrains.shopcatalog.localdata.DatabaseHelperImpl
 import ru.geekbrains.shopcatalog.model.Image
-import ru.geekbrains.shopcatalog.room.ProductEntity
+import ru.geekbrains.shopcatalog.localdata.entity.ProductEntity
+import ru.geekbrains.shopcatalog.localdata.entity.ViewedProductsEntity
 import ru.geekbrains.shopcatalog.utils.AppState
-import ru.geekbrains.shopcatalog.utils.OkHttpInstance
 import ru.geekbrains.shopcatalog.utils.picasso
 import ru.geekbrains.shopcatalog.utils.showSnackBar
 import ru.geekbrains.shopcatalog.view.adapters.HistoryViewedAdapter
@@ -158,17 +151,13 @@ class ProductFragment : Fragment() {
         binding.btnAdd.setOnClickListener {
             Toast.makeText(context, "Товар добавлен в избранное", Toast.LENGTH_LONG).show()
         }
-        saveProductToHistoryViewed(product)
+        viewModel.saveHistoryProductToToDB(product)
     }
 
     private fun setImage(img: Image){
         picasso()
             .load(img.original)
             .into(binding.ivFirst)
-    }
-
-    private fun saveProductToHistoryViewed(product: ProductEntity){
-        viewModel.saveHistoryProductToToDB(product)
     }
 
     override fun onDestroyView() {

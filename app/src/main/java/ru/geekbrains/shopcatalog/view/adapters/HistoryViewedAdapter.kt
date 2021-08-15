@@ -7,10 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.geekbrains.shopcatalog.R
-import ru.geekbrains.shopcatalog.model.Product
-import ru.geekbrains.shopcatalog.room.ProductEntity
+import ru.geekbrains.shopcatalog.localdata.entity.ProductEntity
+import ru.geekbrains.shopcatalog.localdata.entity.ViewedProductsEntity
 import ru.geekbrains.shopcatalog.utils.picassoViewHolder
-import ru.geekbrains.shopcatalog.view.MainListFragment
 
 class HistoryViewedAdapter(private var onItemViewClickListener: OnItemViewClickListener?)
     : RecyclerView.Adapter<HistoryViewedAdapter.RecyclerItemViewHolder>() {

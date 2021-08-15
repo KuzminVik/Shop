@@ -3,65 +3,52 @@ package ru.geekbrains.shopcatalog.viewmodel
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import ru.geekbrains.shopcatalog.apidata.ProductListDTO
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import ru.geekbrains.shopcatalog.apidata.ApiService
 import ru.geekbrains.shopcatalog.apidata.ApiHelper
 import ru.geekbrains.shopcatalog.apidata.ApiHelperImpl
 import ru.geekbrains.shopcatalog.localdata.DatabaseHelperImpl
 import ru.geekbrains.shopcatalog.utils.*
 
-private const val SERVER_ERROR = "Ошибка сервера"
-private const val REQUEST_ERROR = "Ошибка запроса на сервер"
-private const val CORRUPTED_DATA = "Неполные данные"
+private const val DATA_ERROR = "Ошибка получения данных"
 private const val TAG ="MainViewModel"
+private const val PATH = "productFolder=https://online.moysklad.ru/api/remap/1.2/entity/productfolder/"
 
 class MainViewModel(
-    private val apiHelperImpl: ApiHelper = ApiHelperImpl(ApiService()),
+    private val apiHelper: ApiHelper = ApiHelperImpl(ApiService()),
     private val dbHelper: DatabaseHelperImpl
 ) : ViewModel() {
 
     private val listProductsLiveData: MutableLiveData<AppState> = MutableLiveData()
     fun getLiveData() = listProductsLiveData
 
-    fun getListProductsFromApi(idCategory: String){
-        listProductsLiveData.value = AppState.Loading
-        apiHelperImpl.getListProductsInTheCategory(idCategory, callBackListProduct)
-    }
+    fun getMainListProducts(id: String){
+        viewModelScope.launch {
+            listProductsLiveData.postValue(AppState.Loading)
+            try {
+                val category = dbHelper.getOneCategory(id)
+                if(loging) {
+                    Log.d(TAG, "ВНИМАНИЕ ОТЛАДКА: dbHelper.getOneCategory(id) ${category.toString()} category.name = ${category?.name ?: "null"}")}
+                val listProductsFromDb = dbHelper.getListProducts(category?.name ?: "null")
 
-    private val callBackListProduct = object: Callback<ProductListDTO> {
-        override fun onResponse(call: Call<ProductListDTO>, response: Response<ProductListDTO>) {
-            val serverResponseListProductDTO: ProductListDTO? = response.body()
-            listProductsLiveData.postValue(
-                if (response.isSuccessful && serverResponseListProductDTO != null) {
-                    if(logTurnOn) {Log.d(TAG, "!!! callBackListProduct: fun onResponse: listProductLiveData.postValue")}
-                    checkResponseListProductDTO(serverResponseListProductDTO)
-                } else {
-                    if(logTurnOn) {Log.d(TAG, "Ответа с сервера нет или он null")}
-                    AppState.ErrorList(Throwable(SERVER_ERROR))
+                if(listProductsFromDb.isEmpty()){
+                    if(loging) {
+                        Log.d(TAG, "ВНИМАНИЕ ОТЛАДКА: listProductsFromDb.isEmpty()")}
+                    val productsFromApi = convertListProductDtoToEntity(apiHelper.getListProducts("$PATH$id"))
+                    listProductsLiveData.postValue(AppState.SuccessList(productsFromApi))
+                    dbHelper.saveListProducts(productsFromApi)
+                }else{
+                    if(loging) {
+                    Log.d(TAG, "ВНИМАНИЕ ОТЛАДКА: listProductsFromDb не пустой и уходит в SuccessList")}
+                    listProductsLiveData.postValue(AppState.SuccessList(listProductsFromDb))
+                    val productsFromApi = convertListProductDtoToEntity(apiHelper.getListProducts("$PATH$id"))
+                    dbHelper.deleteListProductsInCategory(id)
+                    dbHelper.saveListProducts(productsFromApi)
                 }
-            )
-        }
 
-        override fun onFailure(call: Call<ProductListDTO>, t: Throwable) {
-            if(logTurnOn) {Log.d(TAG, "onFailure ${t.message}")}
-            listProductsLiveData.postValue(AppState.ErrorList(Throwable(t.message ?: REQUEST_ERROR)))
-        }
-
-        private fun checkResponseListProductDTO(serverResponse: ProductListDTO): AppState {
-            val prod = serverResponse.rows
-            return if (prod.isNullOrEmpty() || prod[0].id == ""
-                || prod[0].name == ""
-                || prod[0].description == ""
-                || prod[0].salePrices[0].value.toString() == ""
-                || prod[0].stock.toString() == "") {
-                AppState.ErrorList(Throwable(CORRUPTED_DATA))
-
-            } else {
-                if(logTurnOn) {Log.d(TAG, "List<ProductEntity> уходит в AppState.SuccessList")}
-                AppState.SuccessList(convertListProductDtoToEntity(serverResponse))
+            }catch (e: Exception){
+                AppState.ErrorList(Throwable(DATA_ERROR))
             }
         }
     }

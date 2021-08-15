@@ -12,9 +12,6 @@ interface ViewedProductsDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertViewedProduct(entity: ViewedProductsEntity)
 
-    @Update
-    fun updateViewedProduct(entity: ViewedProductsEntity)
-
     @Delete
     fun deleteViewedProduct(entity: ViewedProductsEntity)
 }

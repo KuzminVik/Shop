@@ -33,6 +33,15 @@ interface ProductAPI {
         @Query("limit") limit: Int
     ): Call<ProductListDTO>
 
+    @GET("entity/assortment")
+    suspend fun getListProducts(
+        @Header("Authorization")  token: String,
+        @Query("filter") productFolderId: String,
+        @Query("groupBy") groupBy: String,
+        @Query("expand") expand: String,
+        @Query("limit") limit: Int
+    ): ProductListDTO
+
     @GET("entity/productfolder")
     suspend fun getListCategory(
         @Header("Authorization")  token: String

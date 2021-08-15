@@ -1,21 +1,24 @@
 package ru.geekbrains.shopcatalog.localdata
 
-import ru.geekbrains.shopcatalog.model.Product
-import ru.geekbrains.shopcatalog.room.CategoryEntity
-import ru.geekbrains.shopcatalog.room.ProductEntity
+import ru.geekbrains.shopcatalog.localdata.entity.CategoryEntity
+import ru.geekbrains.shopcatalog.localdata.entity.ProductEntity
+import ru.geekbrains.shopcatalog.localdata.entity.ViewedProductsEntity
 
 interface DatabaseHelper {
-    fun getAllHistoryViewed(): List<ProductEntity>
-    fun saveViewedProduct(product: ProductEntity)
-    fun deleteViewedProduct(product: ProductEntity)
+    fun getAllHistoryViewed(): List<ViewedProductsEntity>
+    fun saveViewedProduct(product: ViewedProductsEntity)
+    fun deleteViewedProduct(product: ViewedProductsEntity)
 
-    suspend fun saveListCategory(list: List<CategoryEntity>)
-    suspend fun getAllCategory(): List<CategoryEntity>
-    suspend fun deleteAllCategory()
+    suspend fun saveListCategories(list: List<CategoryEntity>)
+    suspend fun getAllCategories(): List<CategoryEntity>
+    suspend fun getOneCategory(id: String): CategoryEntity?
+    suspend fun deleteAllCategories()
 
-    suspend fun saveListProduct(list: List<ProductEntity>)
-    suspend fun getListProduct(nameCategory: String): List<Product>
-    suspend fun getProduct(idProduct: String): Product
+    suspend fun saveListProducts(list: List<ProductEntity>)
+    suspend fun getListProducts(nameCategory: String): List<ProductEntity>
+    fun getProduct(idProduct: String): ProductEntity
+    fun getAllViewedProduct(list: List<String>): List<ProductEntity>
+
     suspend fun deleteProduct(product: ProductEntity)
     suspend fun deleteListProductsInCategory(nameCategory: String)
     suspend fun deleteAllProducts()

@@ -1,7 +1,6 @@
 package ru.geekbrains.shopcatalog.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,10 +15,9 @@ import ru.geekbrains.shopcatalog.apidata.ApiService
 import ru.geekbrains.shopcatalog.databinding.CategoriesFragmentBinding
 import ru.geekbrains.shopcatalog.localdata.DatabaseBuilder
 import ru.geekbrains.shopcatalog.localdata.DatabaseHelperImpl
-import ru.geekbrains.shopcatalog.room.CategoryEntity
+import ru.geekbrains.shopcatalog.localdata.entity.CategoryEntity
 import ru.geekbrains.shopcatalog.utils.COLUMN_COUNT_BASE
 import ru.geekbrains.shopcatalog.utils.Status
-import ru.geekbrains.shopcatalog.utils.logTurnOn
 import ru.geekbrains.shopcatalog.view.adapters.CategoriesAdapter
 import ru.geekbrains.shopcatalog.view.adapters.OnItemViewClickListenerProducts
 import ru.geekbrains.shopcatalog.viewmodel.CategoriesViewModel
@@ -70,7 +68,7 @@ class CategoriesFragment : Fragment() {
     }
 
     private fun setupObserver() {
-        viewModel.detListCategory().observe(viewLifecycleOwner, {
+        viewModel.getListCategory().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
                     binding.progressBar.visibility = View.GONE
@@ -104,7 +102,7 @@ class CategoriesFragment : Fragment() {
 
     private fun renderList(categories: List<CategoryEntity>) {
         val data: MutableList<Pair<CategoryEntity, Int>> = mutableListOf()
-        var levelOne: List<CategoryEntity> = categories.filter { it.pathName == "" }
+//        var levelOne: List<CategoryEntity> = categories.filter { it.pathName == "" }
         val cat = categories.toMutableList()
         for (c1 in cat) {
             if (c1.pathName == "") {

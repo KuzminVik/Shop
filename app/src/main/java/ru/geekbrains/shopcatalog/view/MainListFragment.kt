@@ -17,10 +17,9 @@ import ru.geekbrains.shopcatalog.apidata.ApiService
 import ru.geekbrains.shopcatalog.databinding.FragmentMainListBinding
 import ru.geekbrains.shopcatalog.localdata.DatabaseBuilder
 import ru.geekbrains.shopcatalog.localdata.DatabaseHelperImpl
-import ru.geekbrains.shopcatalog.room.ProductEntity
-import ru.geekbrains.shopcatalog.utils.logTurnOn
+import ru.geekbrains.shopcatalog.localdata.entity.ProductEntity
+import ru.geekbrains.shopcatalog.utils.loging
 import ru.geekbrains.shopcatalog.utils.AppState
-import ru.geekbrains.shopcatalog.utils.showSnackBar
 import ru.geekbrains.shopcatalog.utils.toast
 import ru.geekbrains.shopcatalog.view.adapters.MainListRecyclerViewAdapter
 import ru.geekbrains.shopcatalog.view.adapters.OnItemViewClickListener
@@ -28,12 +27,12 @@ import ru.geekbrains.shopcatalog.viewmodel.MainViewModel
 import ru.geekbrains.shopcatalog.viewmodel.ViewModelFactory
 
 private const val TAG ="MainListFragment"
-private const val NO_DATA = "Извините, товары в этой категорииотсутствуют."
+private const val NO_DATA = "Извините, товары в этой категории отсутствуют."
 
 class MainListFragment : Fragment() {
     private var _binding: FragmentMainListBinding? = null
     private val binding get() = _binding!!
-    private var idCateggory = ""
+    private var idCategory = ""
     private var columnCount = 2
     private lateinit var viewModel: MainViewModel
 //    private val newProductsAdapter = NewProductsRecyclerAdapter()
@@ -57,7 +56,8 @@ class MainListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            idCateggory = it.getString(BUNDLE_EXTRA).toString()
+            idCategory = it.getString(BUNDLE_EXTRA).toString()
+            if(loging) {Log.d(TAG, "ВНИМАНИЕ ОТЛАДКА: idCategory приходит в фрагмент такая: $idCategory")}
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
     }
@@ -74,7 +74,7 @@ class MainListFragment : Fragment() {
         binding.list.adapter = mainListAdapter
 //        binding.listNewProduct.adapter = newProductsAdapter
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
-        viewModel.getListProductsFromApi("productFolder=https://online.moysklad.ru/api/remap/1.2/entity/productfolder/$idCateggory")
+        viewModel.getMainListProducts(idCategory)
 
 //        val rwNewProduct: RecyclerView = view.findViewById(R.id.list_new_product)
 //        rwNewProduct.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
@@ -105,7 +105,7 @@ class MainListFragment : Fragment() {
                 binding.listFragmentLoadingLayout.visibility = View.GONE
 //                newProductsAdapter.setValues(appState.newProductsData)
                 mainListAdapter.setValues(appState.productListData)
-                if(logTurnOn) {Log.d(TAG, "!!! mainListAdapter.setValues(appState.productListData)")}
+                if(loging) {Log.d(TAG, "ВНИМАНИЕ ОТЛАДКА: mainListAdapter.setValues(appState.productListData)")}
             }
             is AppState.Loading -> {
                 binding.listFragmentLoadingLayout.visibility = View.VISIBLE

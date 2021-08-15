@@ -6,7 +6,7 @@ import android.content.Intent
 import android.util.Log
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
-import ru.geekbrains.shopcatalog.utils.logTurnOn
+import ru.geekbrains.shopcatalog.utils.loging
 
 private const val TAG = "GeofenceBroadcastReceiver"
 
@@ -38,7 +38,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 val triggeringGeofences = geofencingEvent.triggeringGeofences
                 GoogleMapsFragment.removeGeofences(context, triggeringGeofences)
             } else {
-                if (logTurnOn) Log.d(TAG, "intent == null")
+                if (loging) Log.d(TAG, "intent == null")
             }
         }
     }

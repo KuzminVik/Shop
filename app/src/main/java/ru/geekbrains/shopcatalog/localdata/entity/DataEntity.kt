@@ -1,4 +1,4 @@
-package ru.geekbrains.shopcatalog.room
+package ru.geekbrains.shopcatalog.localdata.entity
 
 import android.os.Parcelable
 import androidx.room.*

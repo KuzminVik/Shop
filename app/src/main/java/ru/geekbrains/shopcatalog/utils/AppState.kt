@@ -1,8 +1,9 @@
 package ru.geekbrains.shopcatalog.utils
 
 import ru.geekbrains.shopcatalog.model.Image
-import ru.geekbrains.shopcatalog.room.CategoryEntity
-import ru.geekbrains.shopcatalog.room.ProductEntity
+import ru.geekbrains.shopcatalog.localdata.entity.CategoryEntity
+import ru.geekbrains.shopcatalog.localdata.entity.ProductEntity
+import ru.geekbrains.shopcatalog.localdata.entity.ViewedProductsEntity
 
 
 sealed class AppState{

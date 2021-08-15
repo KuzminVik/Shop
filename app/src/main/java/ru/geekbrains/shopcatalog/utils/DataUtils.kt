@@ -1,13 +1,11 @@
 package ru.geekbrains.shopcatalog.utils
 
-import android.util.Log
 import ru.geekbrains.shopcatalog.apidata.*
 import ru.geekbrains.shopcatalog.model.*
-import ru.geekbrains.shopcatalog.localdata.entity.ViewedProductsEntity
-import ru.geekbrains.shopcatalog.room.CategoryEntity
-import ru.geekbrains.shopcatalog.room.ProductEntity
+import ru.geekbrains.shopcatalog.localdata.entity.CategoryEntity
+import ru.geekbrains.shopcatalog.localdata.entity.ProductEntity
 
-fun convertProductDtoToEntity(el: ProductDTO): ProductEntity{
+fun convertProductDtoToEntity(el: ProductDTO): ProductEntity {
 //    val stopper = el.productFolder.name ?: "???"
     return ProductEntity(
         el.id,
@@ -52,16 +50,6 @@ fun convertListProductDtoToEntity(listProd: ProductListDTO): List<ProductEntity>
 fun convertImagesDtoToModel(img: ImagesFromProductDTO): List<Image>{
     val index = img.rows.get(0)
     return listOf(Image(index.meta.downloadHref, index.miniature.href, index.tiny.href))
-}
-
-fun convertHistoryEntityToProduct(entityList: List<ViewedProductsEntity>): List<ProductEntity> {
-    return entityList.map {
-        ProductEntity(it.id_product, it.name, it.description, " ", "", "", "", "", it.prise, "")
-    }
-}
-
-fun convertProductEntityToViewedProductsEntity(pr: ProductEntity): ViewedProductsEntity{
-    return ViewedProductsEntity(pr.id_product, pr.name!!, pr.description!!, pr.prise!!)
 }
 
 fun convertListCategoryDtoToModel(listCat: List<ProductFolderDTO>): List<CategoryEntity>{

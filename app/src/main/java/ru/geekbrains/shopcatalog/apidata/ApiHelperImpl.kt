@@ -8,6 +8,10 @@ class ApiHelperImpl(private val apiService: ApiService) : ApiHelper {
         apiService.getListProductsInTheCategory(id, callback)
     }
 
+    override suspend fun getListProducts(id: String): ProductListDTO {
+        return apiService.getListProducts(id)
+    }
+
     override suspend fun getListCategory(): CategoryListDTO {
         return apiService.getListCategory()
     }

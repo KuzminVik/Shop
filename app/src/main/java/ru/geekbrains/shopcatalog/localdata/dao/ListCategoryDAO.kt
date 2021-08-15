@@ -1,7 +1,7 @@
 package ru.geekbrains.shopcatalog.localdata.dao
 
 import androidx.room.*
-import ru.geekbrains.shopcatalog.room.CategoryEntity
+import ru.geekbrains.shopcatalog.localdata.entity.CategoryEntity
 
 
 @Dao
@@ -28,9 +28,9 @@ interface ListCategoryDAO {
     @Query("SELECT * FROM CategoryEntity")
     suspend fun getAllCategory(): List<CategoryEntity>
 
-    @Query("SELECT * FROM CategoryEntity WHERE id_category IS :id")
-    suspend fun getCategoryWithId(id: String): CategoryEntity
+    @Query("SELECT * FROM CategoryEntity WHERE id_category = :id")
+    suspend fun getCategoryWithId(id: String): CategoryEntity?
 
-    @Query("SELECT * FROM CategoryEntity WHERE name IS :name")
-    suspend fun getCategoryWithName(name: String): CategoryEntity
+    @Query("SELECT * FROM CategoryEntity WHERE name = :name")
+    suspend fun getCategoryWithName(name: String): CategoryEntity?
 }

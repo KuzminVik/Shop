@@ -1,22 +1,22 @@
 package ru.geekbrains.shopcatalog.localdata.dao
 
 import androidx.room.*
-import ru.geekbrains.shopcatalog.apidata.ProductDTO
-import ru.geekbrains.shopcatalog.model.Product
-import ru.geekbrains.shopcatalog.room.ProductEntity
+import ru.geekbrains.shopcatalog.localdata.entity.ProductEntity
 
 @Dao
 interface ListProductsDAO {
 
-    @Transaction
-    @Query("SELECT * FROM ProductEntity WHERE name IS :name")
-    suspend fun getProductsInCategoryWithName(name: String): List<Product>
+    @Query("SELECT * FROM ProductEntity WHERE categoryId LIKE :name")
+    suspend fun getListProductsWithNameCategory(name: String): List<ProductEntity>
 
-    @Query("SELECT * FROM ProductEntity WHERE id_product IS :id")
-    suspend fun getProductWithId(id: String): Product
+    @Query("SELECT * FROM ProductEntity WHERE id_product = :id")
+    fun getProductWithId(id: String): ProductEntity
 
-    @Query("SELECT * FROM ProductEntity WHERE name IS :name")
-    suspend fun getProductWithName(name: String): Product
+    @Query("SELECT * FROM ProductEntity WHERE name = :name")
+    suspend fun getProductWithName(name: String): ProductEntity
+
+    @Query("SELECT * FROM ProductEntity WHERE id_product IN (:list)")
+    fun getAllViewedProduct(list: List<String>): List<ProductEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProduct(product: ProductEntity)
@@ -30,7 +30,7 @@ interface ListProductsDAO {
     @Delete
     suspend fun deleteListProducts(list: List<ProductEntity>)
 
-    @Query("DELETE FROM ProductEntity WHERE name IS :nameCategory" )
+    @Query("DELETE FROM ProductEntity WHERE name = :nameCategory" )
     suspend fun deleteListProductsInCategory(nameCategory: String)
 
     @Query("DELETE FROM ProductEntity")

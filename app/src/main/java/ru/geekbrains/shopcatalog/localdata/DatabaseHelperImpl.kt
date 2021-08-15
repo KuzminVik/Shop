@@ -1,52 +1,57 @@
 package ru.geekbrains.shopcatalog.localdata
 
-import ru.geekbrains.shopcatalog.model.Product
-import ru.geekbrains.shopcatalog.room.CategoryEntity
-import ru.geekbrains.shopcatalog.room.ProductEntity
-import ru.geekbrains.shopcatalog.utils.convertHistoryEntityToProduct
-import ru.geekbrains.shopcatalog.utils.convertProductEntityToViewedProductsEntity
+import ru.geekbrains.shopcatalog.localdata.entity.CategoryEntity
+import ru.geekbrains.shopcatalog.localdata.entity.ProductEntity
+import ru.geekbrains.shopcatalog.localdata.entity.ViewedProductsEntity
 
 class DatabaseHelperImpl(
 private val appDatabase: AppDatabase
     ) : DatabaseHelper {
 
-    override fun getAllHistoryViewed(): List<ProductEntity> {
+    override fun getAllHistoryViewed(): List<ViewedProductsEntity> {
         val res = appDatabase.viewedProductsDAO().getAllViewedProduct()
-        if (res.size>6) appDatabase.viewedProductsDAO().deleteViewedProduct(res.first())
-        return convertHistoryEntityToProduct(res)
+        if(res.size>6) appDatabase.viewedProductsDAO().deleteViewedProduct(res.first())
+        return res
     }
 
-    override fun saveViewedProduct(product: ProductEntity) {
-        appDatabase.viewedProductsDAO().insertViewedProduct(convertProductEntityToViewedProductsEntity(product))
+    override fun saveViewedProduct(product: ViewedProductsEntity) {
+        appDatabase.viewedProductsDAO().insertViewedProduct(product)
     }
 
-    override fun deleteViewedProduct(product: ProductEntity) {
-        appDatabase.viewedProductsDAO().deleteViewedProduct(convertProductEntityToViewedProductsEntity(product))
+    override fun deleteViewedProduct(product: ViewedProductsEntity) {
+        appDatabase.viewedProductsDAO().deleteViewedProduct(product)
     }
 
-    override suspend fun saveListCategory(list: List<CategoryEntity>) {
+    override suspend fun saveListCategories(list: List<CategoryEntity>) {
         appDatabase.listCategoryDAO().insertListCategory(list)
     }
 
-    override suspend fun getAllCategory(): List<CategoryEntity> {
+    override suspend fun getAllCategories(): List<CategoryEntity> {
         return appDatabase.listCategoryDAO().getAllCategory()
     }
 
-    override suspend fun deleteAllCategory() {
+    override suspend fun getOneCategory(id: String): CategoryEntity? {
+        return appDatabase.listCategoryDAO().getCategoryWithId(id)
+    }
+
+    override suspend fun deleteAllCategories() {
         appDatabase.listCategoryDAO().deleteAllCategory()
     }
 
-    override suspend fun saveListProduct(list: List<ProductEntity>) {
+    override suspend fun saveListProducts(list: List<ProductEntity>) {
         appDatabase.listProductsDAO().insertListProducts(list)
     }
 
-    override suspend fun getListProduct(nameCategory: String): List<Product> {
-        return appDatabase.listProductsDAO().getProductsInCategoryWithName(nameCategory)
+    override suspend fun getListProducts(nameCategory: String): List<ProductEntity> {
+        return appDatabase.listProductsDAO().getListProductsWithNameCategory(nameCategory)
     }
 
-    override suspend fun getProduct(idProduct: String): Product {
+    override fun getProduct(idProduct: String): ProductEntity {
         return appDatabase.listProductsDAO().getProductWithId(idProduct)
     }
+
+    override fun getAllViewedProduct(list: List<String>): List<ProductEntity> {
+        return appDatabase.listProductsDAO().getAllViewedProduct(list)    }
 
     override suspend fun deleteProduct(product: ProductEntity) {
         appDatabase.listProductsDAO().deleteProduct(product)

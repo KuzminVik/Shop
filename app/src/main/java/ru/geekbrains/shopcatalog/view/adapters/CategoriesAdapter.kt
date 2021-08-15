@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.geekbrains.shopcatalog.databinding.ItemRvLayoutBinding
-import ru.geekbrains.shopcatalog.room.CategoryEntity
+import ru.geekbrains.shopcatalog.localdata.entity.CategoryEntity
 
 class CategoriesAdapter(private var onItemViewClickListener: OnItemViewClickListenerProducts): RecyclerView.Adapter<CategoriesAdapter.DataViewHolder>() {
 

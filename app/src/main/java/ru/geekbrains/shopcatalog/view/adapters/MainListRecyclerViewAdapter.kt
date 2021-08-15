@@ -7,19 +7,22 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import ru.geekbrains.shopcatalog.R
-import ru.geekbrains.shopcatalog.room.ProductEntity
-import ru.geekbrains.shopcatalog.utils.picasso
+import ru.geekbrains.shopcatalog.localdata.entity.ProductEntity
+import ru.geekbrains.shopcatalog.utils.autoNotify
 import ru.geekbrains.shopcatalog.utils.picassoViewHolder
-import ru.geekbrains.shopcatalog.view.MainListFragment
 
 class MainListRecyclerViewAdapter(private var onItemViewClickListener: OnItemViewClickListener) :
         RecyclerView.Adapter<MainListRecyclerViewAdapter.ViewHolder>() {
 
     private var values: List<ProductEntity> = listOf()
 
-    fun setValues(v: List<ProductEntity>){
-        values = v
-        notifyDataSetChanged()
+    fun setValues(newList: List<ProductEntity>){
+        if(values.isEmpty()){
+            values = newList
+            notifyDataSetChanged()
+        }else{
+            autoNotify(values, newList)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

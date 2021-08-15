@@ -20,10 +20,10 @@ data class ProductDTO(
     val stock: Double = 0.0
     ): Parcelable
 
-@Parcelize
-data class RowsFolderDTO(
-    val rows: List<ProductFolderDTO>
-): Parcelable
+//@Parcelize
+//data class RowsFolderDTO(
+//    val rows: List<ProductFolderDTO>
+//): Parcelable
 
 @Parcelize
 data class ProductFolderDTO(

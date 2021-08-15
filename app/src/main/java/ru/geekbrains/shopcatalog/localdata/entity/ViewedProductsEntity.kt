@@ -9,8 +9,5 @@ import kotlinx.parcelize.Parcelize
 @Entity
 data class ViewedProductsEntity(
     @PrimaryKey()
-    val id_product: String,
-    val name: String,
-    val description: String,
-    val prise: String
+    val id_product: String
 ): Parcelable

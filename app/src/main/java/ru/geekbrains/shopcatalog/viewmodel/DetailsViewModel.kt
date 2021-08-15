@@ -7,7 +7,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import ru.geekbrains.shopcatalog.apidata.*
 import ru.geekbrains.shopcatalog.localdata.DatabaseHelper
-import ru.geekbrains.shopcatalog.room.ProductEntity
+import ru.geekbrains.shopcatalog.localdata.entity.ProductEntity
+import ru.geekbrains.shopcatalog.localdata.entity.ViewedProductsEntity
 import ru.geekbrains.shopcatalog.utils.*
 
 private const val SERVER_ERROR = "Ошибка сервера"
@@ -31,12 +32,17 @@ class DetailsViewModel(
     }
 
     fun saveHistoryProductToToDB(product: ProductEntity) {
-        dbHelper.saveViewedProduct(product)
+        dbHelper.saveViewedProduct(ViewedProductsEntity(product.id_product))
     }
 
     fun getAllHistory() {
         historyLiveData.value = AppState.Loading
-        historyLiveData.value = AppState.SuccessHistory(dbHelper.getAllHistoryViewed())
+        val history = dbHelper.getAllHistoryViewed()
+        val historyIdList = mutableListOf<String>()
+        for (el in history){
+            historyIdList.add(el.id_product)
+        }
+        historyLiveData.value = AppState.SuccessHistory(dbHelper.getAllViewedProduct(historyIdList))
     }
 
     private val callBackProduct = object:  Callback<ProductDTO> {
