@@ -20,9 +20,9 @@
     <string name="places">Место</string>
     <string name="news">Новости</string>
     <string name="error">Ошибка загрузки данных</string>
-    <string name="reload">reload</string>
+    <string name="ok">Ok</string>
     <string name="title_home">home</string>
-    <string name="viewed_product">Последние просмотренные товары</string>
+    <string name="viewed_product">Недавно вы смотрели:</string>
 
     <string name="dialog_button_close">Закрыть</string>
     <string name="dialog_title_no_gps">Доступ к геолокации закрыт</string>
@@ -51,4 +51,8 @@
     <string name="favourite">favourite</string>
     <string name="home">Home</string>
     <string name="ok">OK</string>
+    <string name="label_desc">Описание:</string>
+    <string name="label_size">Размеры в наличии:</string>
+    <string name="label_prise">Цена:</string>
+    <string name="label_supplier">Производитель:</string>
 </resources>

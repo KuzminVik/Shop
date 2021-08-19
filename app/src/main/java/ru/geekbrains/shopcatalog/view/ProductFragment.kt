@@ -29,7 +29,6 @@ class ProductFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var productBundle: ProductEntity
     private lateinit var viewModel: DetailsViewModel
-//    private val viewModel: DetailsViewModel by lazy { ViewModelProvider(this).get(DetailsViewModel::class.java) }
 
     companion object {
         const val BUNDLE_EXTRA = "product"
@@ -67,12 +66,14 @@ class ProductFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupViewModel()
         productBundle = arguments?.getParcelable(BUNDLE_EXTRA) ?: ProductEntity("0","0","0","0","0","0","0","0","0","0")
+        // Немного тупости - кидаем продукт в аппстейт и подписываемся
         viewModel.getProductLiveData().observe(viewLifecycleOwner, { renderData(it) })
-        viewModel.getProductFromApi(productBundle.id_product)
+        viewModel.getProductDetails(productBundle)
+//        viewModel.getProductFromApi(productBundle.id_product)
         binding.historyViewedRecyclerview.adapter = historyViewedAdapter
         viewModel.historyLiveData.observe(viewLifecycleOwner, { renderDataHistory(it) })
         viewModel.getAllHistory()
-        viewModel.imageLiveData.observe(viewLifecycleOwner, { renderDataImage(it) })
+//        viewModel.imageLiveData.observe(viewLifecycleOwner, { renderDataImage(it) })
     }
 
     private fun setupViewModel() {
@@ -102,9 +103,9 @@ class ProductFragment : Fragment() {
                 binding.productFragmentLoadingLayout.visibility = View.GONE
                 binding.mainView.showSnackBar(
                     getString(R.string.error),
-                    getString(R.string.reload),
+                    getString(R.string.ok),
                     {
-                        viewModel.getProductFromApi(productBundle.id_product)
+
                     }
                 )
             }
@@ -130,35 +131,40 @@ class ProductFragment : Fragment() {
         }
     }
 
-    private fun renderDataImage(appState: AppState){
-        when(appState){
-            is AppState.SuccessImage -> {
-                setImage(appState.imageData[0])
-            }
-            is AppState.Loading -> {
-                //добавить свой прогресс бар
-            }
-            else -> {
-            // code
-        }
-        }
-    }
+//    private fun renderDataImage(appState: AppState){
+//        when(appState){
+//            is AppState.SuccessImage -> {
+//                setImage(appState.imageData[0])
+//            }
+//            is AppState.Loading -> {
+//                //добавить свой прогресс бар
+//            }
+//            else -> {
+//            // code
+//        }
+//        }
+//    }
 
     private fun setProduct(product: ProductEntity) {
+
         binding.tvName.text = product.name
         binding.tvDesc.text = product.description
+        binding.supplier.text = product.supplier
         binding.tvPrice.text = product.prise
         binding.btnAdd.setOnClickListener {
             Toast.makeText(context, "Товар добавлен в избранное", Toast.LENGTH_LONG).show()
         }
         viewModel.saveHistoryProductToToDB(product)
-    }
-
-    private fun setImage(img: Image){
         picasso()
-            .load(img.original)
+            .load(product.imgLoad)
             .into(binding.ivFirst)
     }
+
+//    private fun setImage(img: Image){
+//        picasso()
+//            .load(img.original)
+//            .into(binding.ivFirst)
+//    }
 
     override fun onDestroyView() {
         super.onDestroyView()

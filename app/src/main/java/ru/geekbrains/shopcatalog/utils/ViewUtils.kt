@@ -1,14 +1,9 @@
 package ru.geekbrains.shopcatalog.utils
 
-import android.content.Context
-import android.icu.number.NumberFormatter.with
-import android.icu.number.NumberRangeFormatter.with
 import android.view.Gravity
 import android.view.View
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
@@ -17,8 +12,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import ru.geekbrains.shopcatalog.BuildConfig
-import ru.geekbrains.shopcatalog.view.adapters.MainListRecyclerViewAdapter
-import java.security.AccessController.getContext
 
 fun View.showSnackBar(
     text: String,
@@ -50,19 +43,17 @@ object OkHttpInstance {
     }
 }
 
-fun Fragment.picasso(): Picasso{
+fun Fragment.picasso(): Picasso {
     val client = OkHttpInstance.getClient()
-    val picasso = Picasso.Builder(this.requireContext())
+    return Picasso.Builder(requireContext())
         .downloader(OkHttp3Downloader(client))
         .build()
-    return picasso
 }
 
 
-fun View.picassoViewHolder(): Picasso{
+fun View.picassoViewHolder(): Picasso {
     val client = OkHttpInstance.getClient()
-    val picassoViewHolder = Picasso.Builder(this.context)
+    return Picasso.Builder(context)
         .downloader(OkHttp3Downloader(client))
         .build()
-    return picassoViewHolder
 }

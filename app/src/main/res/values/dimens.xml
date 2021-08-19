@@ -16,5 +16,12 @@
     <dimen name="text_size_10">10sp</dimen>
     <dimen name="margin_8">8dp</dimen>
     <dimen name="marginFromTheBottom">60dp</dimen>
+    <dimen name="width_itemLayout_85">85dp</dimen>
+    <dimen name="cardCornerRadius">5dp</dimen>
+    <dimen name="cardElevation">3dp</dimen>
+    <dimen name="margin_5">5dp</dimen>
+    <dimen name="width_layout_80">80dp</dimen>
+    <dimen name="height_layout_110">110dp</dimen>
+    <dimen name="margin_2">2dp</dimen>
 
 </resources>
