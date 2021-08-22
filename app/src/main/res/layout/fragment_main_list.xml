@@ -57,9 +57,8 @@
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:layout_constraintTop_toTopOf="parent"
                 app:spanCount="2"
-                tools:context=".view.MainListFragment"/>
-<!--                tools:listitem="@layout/main_recycler_item" -->
-<!--                tools:layout_editor_absoluteX="16dp"-->
+                tools:context=".view.MainListFragment"
+                tools:listitem="@layout/main_recycler_item" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

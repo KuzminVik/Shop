@@ -110,17 +110,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/supplier" />
 
-            <TextView
-                android:id="@+id/size"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/sizeLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:text="42 test"
+                android:gravity="start"
+                app:layout_constraintBottom_toTopOf="@+id/label_prise"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/label_size" />
+                app:layout_constraintTop_toBottomOf="@+id/label_size">
+
+
+            </com.google.android.material.chip.ChipGroup>
 
             <TextView
                 android:id="@+id/label_prise"
@@ -133,7 +137,7 @@
                 android:textColor="#616161"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/size" />
+                app:layout_constraintTop_toBottomOf="@+id/sizeLayout" />
 
             <TextView
                 android:id="@+id/tv_price"
@@ -194,8 +198,8 @@
         android:visibility="gone"
         tools:visibility="invisible">
 
-        <!--        <include-->
-        <!--            layout="@layout/loading_layout" />-->
+                <include
+                    layout="@layout/loading_layout" />
 
     </FrameLayout>
 

@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Shopcatalog/app/src/main/res/layout/categories_fragment.xml" value="0.25416666666666665" />
+        <entry key="..\:/Shopcatalog/app/src/main/res/layout/favorit_recycler_item.xml" value="0.536" />
+        <entry key="..\:/Shopcatalog/app/src/main/res/layout/favorite_fragment.xml" value="0.24728260869565216" />
         <entry key="..\:/Shopcatalog/app/src/main/res/layout/fragment_bottom_navigation_drawer.xml" value="0.15833333333333333" />
         <entry key="..\:/Shopcatalog/app/src/main/res/layout/fragment_content.xml" value="0.20677083333333332" />
         <entry key="..\:/Shopcatalog/app/src/main/res/layout/fragment_main_list.xml" value="0.25416666666666665" />
@@ -14,6 +16,7 @@
         <entry key="..\:/Shopcatalog/app/src/main/res/layout/main_recycler_item.xml" value="0.2234375" />
         <entry key="..\:/Shopcatalog/app/src/main/res/layout/newproduct_recycler_item.xml" value="0.2234375" />
         <entry key="..\:/Shopcatalog/app/src/main/res/layout/product_fragment.xml" value="0.4" />
+        <entry key="..\:/Shopcatalog/app/src/main/res/layout/single_chip_layout.xml" value="0.2234375" />
         <entry key="..\:/Shopcatalog/app/src/main/res/menu/bottom_nav_drawer_menu.xml" value="0.25416666666666665" />
       </map>
     </option>

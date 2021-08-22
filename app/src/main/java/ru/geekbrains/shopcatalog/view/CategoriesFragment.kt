@@ -102,7 +102,6 @@ class CategoriesFragment : Fragment() {
 
     private fun renderList(categories: List<CategoryEntity>) {
         val data: MutableList<Pair<CategoryEntity, Int>> = mutableListOf()
-//        var levelOne: List<CategoryEntity> = categories.filter { it.pathName == "" }
         val cat = categories.toMutableList()
         for (c1 in cat) {
             if (c1.pathName == "") {

@@ -22,28 +22,8 @@ class ApiService {
         .client(createOkHttpClient(ProductApiInterceptor()))
         .build().create(ProductAPI::class.java)
 
-    fun getProductDetails(id: String, callback: Callback<ProductDTO>) {
-        productAPI.getProduct("Bearer ${BuildConfig.API_AUTHORIZATION}", id)
-            .enqueue(callback)
-    }
-
-    fun getImagesDetails(id: String, callback: Callback<ImagesFromProductDTO>) {
-        productAPI.getImagesFromProduct("Bearer ${BuildConfig.API_AUTHORIZATION}", id)
-            .enqueue(callback)
-    }
-
     suspend fun getListCategory(): CategoryListDTO{
         return productAPI.getListCategory("Bearer ${BuildConfig.API_AUTHORIZATION}")
-    }
-
-    fun getListProductsInTheCategory(productFolderId: String, callback: Callback<ProductListDTO>) {
-        productAPI.getProductsInTheCategory(
-            "Bearer ${BuildConfig.API_AUTHORIZATION}",
-            "$productFolderId;quantityMode=positiveOnly",
-            "product",
-            "supplier,productFolder,images",
-            100
-        ).enqueue(callback)
     }
 
     suspend fun getListProducts(id: String): ProductListDTO {
@@ -53,6 +33,13 @@ class ApiService {
             "product",
             "supplier,productFolder,images",
             100
+        )
+    }
+
+    suspend fun getListVariants(productId: String): VariantListDTO{
+        return productAPI.getListVariantForProduct(
+            "Bearer ${BuildConfig.API_AUTHORIZATION}",
+            "productid=$productId"
         )
     }
 

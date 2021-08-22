@@ -1,21 +1,24 @@
 package ru.geekbrains.shopcatalog.view
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.GridLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import ru.geekbrains.shopcatalog.R
 import ru.geekbrains.shopcatalog.apidata.ApiHelperImpl
 import ru.geekbrains.shopcatalog.apidata.ApiService
 import ru.geekbrains.shopcatalog.databinding.ProductFragmentBinding
 import ru.geekbrains.shopcatalog.localdata.DatabaseBuilder
 import ru.geekbrains.shopcatalog.localdata.DatabaseHelperImpl
-import ru.geekbrains.shopcatalog.model.Image
 import ru.geekbrains.shopcatalog.localdata.entity.ProductEntity
-import ru.geekbrains.shopcatalog.localdata.entity.ViewedProductsEntity
 import ru.geekbrains.shopcatalog.utils.AppState
 import ru.geekbrains.shopcatalog.utils.picasso
 import ru.geekbrains.shopcatalog.utils.showSnackBar
@@ -32,27 +35,29 @@ class ProductFragment : Fragment() {
 
     companion object {
         const val BUNDLE_EXTRA = "product"
-        fun newInstance(bundle: Bundle) : ProductFragment{
+        fun newInstance(bundle: Bundle): ProductFragment {
             val fragment = ProductFragment()
             fragment.arguments = bundle
             return fragment
         }
     }
 
-    private val historyViewedAdapter: HistoryViewedAdapter by lazy { HistoryViewedAdapter(
-        object : OnItemViewClickListener {
-            override fun onItemViewClick(product: ProductEntity) {
-                activity?.supportFragmentManager?.apply {
-                    beginTransaction()
-                        .replace(R.id.container, newInstance(Bundle().apply {
-                            putParcelable(BUNDLE_EXTRA, product)
-                        }))
-                        .addToBackStack("")
-                        .commitAllowingStateLoss()
+    private val historyViewedAdapter: HistoryViewedAdapter by lazy {
+        HistoryViewedAdapter(
+            object : OnItemViewClickListener {
+                override fun onItemViewClick(product: ProductEntity) {
+                    activity?.supportFragmentManager?.apply {
+                        beginTransaction()
+                            .replace(R.id.container, newInstance(Bundle().apply {
+                                putParcelable(BUNDLE_EXTRA, product)
+                            }))
+                            .addToBackStack("")
+                            .commitAllowingStateLoss()
+                    }
                 }
             }
-        }
-    ) }
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,16 +69,23 @@ class ProductFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        productBundle = arguments?.getParcelable(BUNDLE_EXTRA) ?: ProductEntity(
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+        )
         setupViewModel()
-        productBundle = arguments?.getParcelable(BUNDLE_EXTRA) ?: ProductEntity("0","0","0","0","0","0","0","0","0","0")
-        // Немного тупости - кидаем продукт в аппстейт и подписываемся
-        viewModel.getProductLiveData().observe(viewLifecycleOwner, { renderData(it) })
-        viewModel.getProductDetails(productBundle)
-//        viewModel.getProductFromApi(productBundle.id_product)
+        setupObserverHistory()
+        setupObserverDetails()
+        setupObserverVariants()
         binding.historyViewedRecyclerview.adapter = historyViewedAdapter
-        viewModel.historyLiveData.observe(viewLifecycleOwner, { renderDataHistory(it) })
-        viewModel.getAllHistory()
-//        viewModel.imageLiveData.observe(viewLifecycleOwner, { renderDataImage(it) })
     }
 
     private fun setupViewModel() {
@@ -86,67 +98,86 @@ class ProductFragment : Fragment() {
         ).get(DetailsViewModel::class.java)
     }
 
-    private fun renderData(appState: AppState) {
-        when(appState){
-            is AppState.SuccessProduct -> {
-                binding.mainView.visibility = View.VISIBLE
-                binding.productFragmentLoadingLayout.visibility = View.GONE
-                setProduct(product = appState.productData)
-            }
+    private  fun setupObserverDetails(){
+        viewModel.getProductLD().observe(viewLifecycleOwner, {
+            when (it) {
+                is AppState.SuccessProduct -> {
+                    binding.mainView.visibility = View.VISIBLE
+                    binding.productFragmentLoadingLayout.visibility = View.GONE
+                    setProduct(product = it.productData)
+                }
 
-            is AppState.Loading -> {
-                binding.mainView.visibility = View.GONE
-                binding.productFragmentLoadingLayout.visibility = View.VISIBLE
-            }
-            is AppState.Error -> {
-                binding.mainView.visibility = View.VISIBLE
-                binding.productFragmentLoadingLayout.visibility = View.GONE
-                binding.mainView.showSnackBar(
-                    getString(R.string.error),
-                    getString(R.string.ok),
-                    {
+                is AppState.Loading -> {
+                    binding.mainView.visibility = View.GONE
+                    binding.productFragmentLoadingLayout.visibility = View.VISIBLE
+                }
+                is AppState.Error -> {
+                    binding.mainView.visibility = View.VISIBLE
+                    binding.productFragmentLoadingLayout.visibility = View.GONE
+                    binding.mainView.showSnackBar(
+                        getString(R.string.error),
+                        getString(R.string.ok),
+                        {
 
-                    }
-                )
+                        }
+                    )
+                }
+                else -> {
+                    // code
+                }
             }
-            else -> {
-                // code
-            }
-        }
+            // !!! Немного тупости - подписываемся и сами же кидаем продукт в аппстейт
+
+        })
+        viewModel.getProductDetails(productBundle)
     }
 
-    private fun renderDataHistory(appState: AppState){
-        when(appState){
-            is AppState.SuccessHistory -> {
-                historyViewedAdapter.setData(appState.historyData)
-            }
-            is AppState.Loading -> {
-                //добавить свой прогресс бар
+    private fun setupObserverHistory(){
+        viewModel.getHistoryLD().observe(viewLifecycleOwner, {
+            when (it) {
+                is AppState.SuccessHistory -> {
+                    historyViewedAdapter.setData(it.historyData)
+                }
+                is AppState.Loading -> {
+                    //добавить свой прогресс бар
 //                binding.mainView.visibility = View.GONE
 //                binding.loadingLayout.visibility = View.VISIBLE
+                }
+                else -> {
+                    // code
+                }
             }
-            else -> {
-                // code
-            }
-        }
+        })
     }
 
-//    private fun renderDataImage(appState: AppState){
-//        when(appState){
-//            is AppState.SuccessImage -> {
-//                setImage(appState.imageData[0])
-//            }
-//            is AppState.Loading -> {
-//                //добавить свой прогресс бар
-//            }
-//            else -> {
-//            // code
-//        }
-//        }
-//    }
+    private fun setupObserverVariants(){
+        viewModel.getVariantsLD().observe(viewLifecycleOwner, {
+            when(it){
+                is AppState.SuccessVariants ->{
+                    val chipGroup = binding.sizeLayout
+                    chipGroup.isSingleSelection = false
+                    for (index in it.variantsData.indices){
+                        val chip = layoutInflater.inflate(R.layout.single_chip_layout, chipGroup, false) as Chip
+                        chip.isClickable = true
+                        chip.text = it.variantsData[index].size
+                        chipGroup.addView(chip)
+                    }
+                }
+                is AppState.Loading -> {
+                    //TODO
+                }
+                is AppState.ErrorVariants ->{
+                    //TODO
+                }
+            }
+        })
+        viewModel.getVariants(productBundle.id_product)
+    }
 
     private fun setProduct(product: ProductEntity) {
-
+        picasso()
+            .load(product.imgLoad)
+            .into(binding.ivFirst)
         binding.tvName.text = product.name
         binding.tvDesc.text = product.description
         binding.supplier.text = product.supplier
@@ -155,16 +186,7 @@ class ProductFragment : Fragment() {
             Toast.makeText(context, "Товар добавлен в избранное", Toast.LENGTH_LONG).show()
         }
         viewModel.saveHistoryProductToToDB(product)
-        picasso()
-            .load(product.imgLoad)
-            .into(binding.ivFirst)
     }
-
-//    private fun setImage(img: Image){
-//        picasso()
-//            .load(img.original)
-//            .into(binding.ivFirst)
-//    }
 
     override fun onDestroyView() {
         super.onDestroyView()

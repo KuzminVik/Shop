@@ -2,34 +2,48 @@ package ru.geekbrains.shopcatalog.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import ru.geekbrains.shopcatalog.apidata.*
 import ru.geekbrains.shopcatalog.localdata.DatabaseHelper
 import ru.geekbrains.shopcatalog.localdata.entity.ProductEntity
 import ru.geekbrains.shopcatalog.localdata.entity.ViewedProductsEntity
 import ru.geekbrains.shopcatalog.utils.*
 
-private const val SERVER_ERROR = "Ошибка сервера"
-private const val REQUEST_ERROR = "Ошибка запроса на сервер"
-private const val CORRUPTED_DATA = "Неполные данные"
-
 class DetailsViewModel(
     private val apiHelper: ApiHelper = ApiHelperImpl(ApiService()),
     private val dbHelper: DatabaseHelper
 ): ViewModel() {
 
-//    val imageLiveData: MutableLiveData<AppState> = MutableLiveData()
-    val historyLiveData: MutableLiveData<AppState> = MutableLiveData()
-    val detailsLiveData: MutableLiveData<AppState> = MutableLiveData()
-    fun getProductLiveData() = detailsLiveData
+    private val historyLiveData: MutableLiveData<AppState> = MutableLiveData()
+    fun getHistoryLD() = historyLiveData
 
-//    fun getProductFromApi(id: String) {
-//        detailsLiveData.value = AppState.Loading
-//        apiHelper.getProductFromServer(id, callBackProduct)
-////        apiHelper.getImagesFromServer(id, callBackImages)
-//    }
+    private val detailsLiveData: MutableLiveData<AppState> = MutableLiveData()
+    fun getProductLD() = detailsLiveData
+
+    private val variantsLiveData: MutableLiveData<AppState> = MutableLiveData()
+    fun getVariantsLD() = variantsLiveData
+
+    init {
+        fetchDetails()
+    }
+
+    private fun fetchDetails(){
+        viewModelScope.launch {
+            historyLiveData.postValue(AppState.Loading)
+            try {
+                val history = dbHelper.getAllHistoryViewed()
+                val historyIdList = mutableListOf<String>()
+                for (el in history){
+                    historyIdList.add(el.id_product)
+                }
+                historyLiveData.value = AppState.SuccessHistory(dbHelper.getAllViewedProduct(historyIdList))
+            }catch (e: Exception){
+                historyLiveData.postValue(AppState.Error(e))
+            }
+
+        }
+    }
 
     fun getProductDetails(product: ProductEntity){
         detailsLiveData.value = AppState.Loading
@@ -40,66 +54,19 @@ class DetailsViewModel(
         dbHelper.saveViewedProduct(ViewedProductsEntity(product.id_product))
     }
 
-    fun getAllHistory() {
-        historyLiveData.value = AppState.Loading
-        val history = dbHelper.getAllHistoryViewed()
-        val historyIdList = mutableListOf<String>()
-        for (el in history){
-            historyIdList.add(el.id_product)
+    fun getVariants(id: String){
+        variantsLiveData.postValue(AppState.Loading)
+        viewModelScope.launch{
+            try {
+                val variants = convertVariantListDtoToEntity(apiHelper.getListVariants(id))
+                variantsLiveData.postValue(AppState.SuccessVariants(variants))
+            }catch (e: Exception){
+                variantsLiveData.postValue(AppState.Error(e))
+            }
         }
-        historyLiveData.value = AppState.SuccessHistory(dbHelper.getAllViewedProduct(historyIdList))
     }
 
-//    private val callBackProduct = object:  Callback<ProductDTO> {
-//        override fun onResponse(call: Call<ProductDTO>, response: Response<ProductDTO>) {
-//            val serverResponseProductDTO: ProductDTO? = response.body()
-//            detailsLiveData.postValue(
-//                    if (response.isSuccessful && serverResponseProductDTO != null) {
-//                        checkResponseProductDTO(serverResponseProductDTO)
-//                    } else {
-//                        AppState.Error(Throwable(SERVER_ERROR))
-//                    }
-//            )
-//        }
-//        override fun onFailure(call: Call<ProductDTO>, t: Throwable) {
-//            detailsLiveData.postValue(AppState.Error(Throwable(t.message ?: REQUEST_ERROR)))
-//        }
-//
-//        private fun checkResponseProductDTO(serverResponse: ProductDTO): AppState {
-//            val prod = serverResponse
-//            return if (prod.id == "" || prod.name == "" || prod.description == "" || prod.salePrices[0].value.toString() == "") {
-//                AppState.Error(Throwable(CORRUPTED_DATA))
-//            } else {
-//                AppState.SuccessProduct(convertProductDtoToEntity(serverResponse))
-//            }
-//        }
-//    }
+    fun insertFavoriteProduct(){
 
-//    private val callBackImages = object:  Callback<ImagesFromProductDTO>{
-//        override fun onResponse(call: Call<ImagesFromProductDTO>, response: Response<ImagesFromProductDTO>) {
-//            val serverResponseImages: ImagesFromProductDTO? = response.body()
-//            imageLiveData.postValue(
-//                if (response.isSuccessful && serverResponseImages != null) {
-//                    checkResponseImages(serverResponseImages)
-//                } else {
-//                    AppState.Error(Throwable(SERVER_ERROR))
-//                }
-//            )
-//        }
-//
-//        override fun onFailure(call: Call<ImagesFromProductDTO>, t: Throwable) {
-//            imageLiveData.postValue(AppState.Error(Throwable(t.message ?: REQUEST_ERROR)))
-//        }
-//
-//        private fun checkResponseImages(serverResponse: ImagesFromProductDTO): AppState {
-//            val img = serverResponse
-//            val index = img.rows[0]
-//            return if (index.meta.downloadHref == "" || index.miniature.href == "" || index.tiny.href == "") {
-//                AppState.Error(Throwable(CORRUPTED_DATA))
-//            } else {
-//                AppState.SuccessImage(convertImagesDtoToModel(serverResponse))
-//            }
-//        }
-//
-//    }
+    }
 }

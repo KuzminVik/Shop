@@ -70,12 +70,11 @@ class MainListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViewModel()
+        setupObserver()
+        viewModel.getMainListProducts(idCategory)
 
         binding.list.adapter = mainListAdapter
 //        binding.listNewProduct.adapter = newProductsAdapter
-        viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
-        viewModel.getMainListProducts(idCategory)
-
 //        val rwNewProduct: RecyclerView = view.findViewById(R.id.list_new_product)
 //        rwNewProduct.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
 
@@ -99,28 +98,6 @@ class MainListFragment : Fragment() {
             }
     }
 
-    private fun renderData(appState: AppState) {
-        when (appState) {
-            is AppState.SuccessList -> {
-                binding.listFragmentLoadingLayout.visibility = View.GONE
-//                newProductsAdapter.setValues(appState.newProductsData)
-                mainListAdapter.setValues(appState.productListData)
-                if(loging) {Log.d(TAG, "ВНИМАНИЕ ОТЛАДКА: mainListAdapter.setValues(appState.productListData)")}
-            }
-            is AppState.Loading -> {
-                binding.listFragmentLoadingLayout.visibility = View.VISIBLE
-            }
-            is AppState.ErrorList -> {
-                binding.listFragmentLoadingLayout.visibility = View.GONE
-                toast(NO_DATA)
-//                binding.mainView.showSnackBar(
-//                        getString(R.string.error), getString(R.string.ok),
-//                        {  }
-//                )
-            }
-        }
-    }
-
     fun setupViewModel(){
         viewModel = ViewModelProviders.of(
             this,
@@ -130,6 +107,30 @@ class MainListFragment : Fragment() {
 
             )
         ).get(MainViewModel::class.java)
+    }
+
+    private fun setupObserver(){
+        viewModel.getLiveData().observe(viewLifecycleOwner, {
+            when (it) {
+                is AppState.SuccessList -> {
+                    binding.listFragmentLoadingLayout.visibility = View.GONE
+//                newProductsAdapter.setValues(appState.newProductsData)
+                    mainListAdapter.setValues(it.productListData)
+                    if(loging) {Log.d(TAG, "ВНИМАНИЕ ОТЛАДКА: mainListAdapter.setValues(appState.productListData)")}
+                }
+                is AppState.Loading -> {
+                    binding.listFragmentLoadingLayout.visibility = View.VISIBLE
+                }
+                is AppState.ErrorList -> {
+                    binding.listFragmentLoadingLayout.visibility = View.GONE
+                    toast(NO_DATA)
+//                binding.mainView.showSnackBar(
+//                        getString(R.string.error), getString(R.string.ok),
+//                        {  }
+//                )
+                }
+            }
+        })
     }
 
     override fun onDestroyView() {

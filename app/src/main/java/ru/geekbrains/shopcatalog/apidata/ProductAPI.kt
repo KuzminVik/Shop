@@ -18,12 +18,6 @@ interface ProductAPI {
         @Path("id") id: String
     ): Call<ProductDTO>
 
-    @GET("entity/product/{id}/images")
-    fun getImagesFromProduct(
-        @Header("Authorization") token: String,
-        @Path("id") id: String
-    ): Call<ImagesFromProductDTO>
-
     @GET("entity/assortment")
     fun getProductsInTheCategory(
         @Header("Authorization")  token: String,
@@ -48,9 +42,9 @@ interface ProductAPI {
     ): CategoryListDTO
 
 
-//    @GET("entity/variant/{id}")
-//    fun getListVariantForProduct(
-//    @Header("Authorization")  token: String,
-//    @Path("id") id: String
-//    ) : Call<VariantDTO>
+    @GET("entity/variant")
+    suspend fun getListVariantForProduct(
+    @Header("Authorization")  token: String,
+    @Query("filter") productId: String
+    ) : VariantListDTO
 }

@@ -10,7 +10,7 @@ private val appDatabase: AppDatabase
 
     override fun getAllHistoryViewed(): List<ViewedProductsEntity> {
         val res = appDatabase.viewedProductsDAO().getAllViewedProduct()
-        if(res.size>6) appDatabase.viewedProductsDAO().deleteViewedProduct(res.first())
+        if(res.size>5) appDatabase.viewedProductsDAO().deleteViewedProduct(res.first())
         return res
     }
 
