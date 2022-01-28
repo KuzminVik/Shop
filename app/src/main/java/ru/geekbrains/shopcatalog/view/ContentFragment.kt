@@ -46,8 +46,8 @@ class ContentFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.app_bar_fav -> toast("Fav menu item is clicked!")
-            R.id.app_bar_main -> toast("childFragmentManager ${childFragmentManager.backStackEntryCount.toString()}")
-            R.id.app_bar_settings -> toast("parentFragmentManager${parentFragmentManager.backStackEntryCount.toString()}")
+            R.id.app_bar_main -> toast("childFragmentManager ${childFragmentManager.backStackEntryCount}")
+            R.id.app_bar_settings -> toast("parentFragmentManager${parentFragmentManager.backStackEntryCount}")
             android.R.id.home -> {
                 val bottomNavDrawerFragment = BottomNavigationDrawerFragment()
                 bottomNavDrawerFragment.show(parentFragmentManager, bottomNavDrawerFragment.tag)
@@ -68,7 +68,11 @@ class ContentFragment : Fragment() {
             )
         )
         binding.fab.setOnClickListener {
-            // code
+            parentFragmentManager.commit {
+                setReorderingAllowed(true)
+                replace(R.id.container, FavoriteFragment.newInstance())
+                addToBackStack("FavoriteFragment")
+            }
         }
     }
 
@@ -96,6 +100,6 @@ class ContentFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = ContentFragment()
+        fun newInstance(): Fragment = ContentFragment()
     }
 }

@@ -1,6 +1,7 @@
 package ru.geekbrains.shopcatalog.localdata
 
 import ru.geekbrains.shopcatalog.localdata.entity.CategoryEntity
+import ru.geekbrains.shopcatalog.localdata.entity.FavoriteEntity
 import ru.geekbrains.shopcatalog.localdata.entity.ProductEntity
 import ru.geekbrains.shopcatalog.localdata.entity.ViewedProductsEntity
 
@@ -53,6 +54,18 @@ private val appDatabase: AppDatabase
     override fun getAllViewedProduct(list: List<String>): List<ProductEntity> {
         return appDatabase.listProductsDAO().getAllViewedProduct(list)    }
 
+    override suspend fun saveFavoriteProduct(prod: FavoriteEntity) {
+        appDatabase.viewedProductsDAO().insertFavoriteProduct(prod)
+    }
+
+    override suspend fun getAllFavorites(): List<FavoriteEntity> {
+        return appDatabase.viewedProductsDAO().getAllFavorites()
+    }
+
+    override suspend fun deleteFavoriteEntity(id: Long) {
+        appDatabase.viewedProductsDAO().deleteFavoriteEntity(id)
+    }
+
     override suspend fun deleteProduct(product: ProductEntity) {
         appDatabase.listProductsDAO().deleteProduct(product)
     }
@@ -64,6 +77,5 @@ private val appDatabase: AppDatabase
     override suspend fun deleteAllProducts() {
         appDatabase.listProductsDAO().deleteAllProducts()
     }
-
 
 }

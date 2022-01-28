@@ -1,19 +1,21 @@
 package ru.geekbrains.shopcatalog.apidata
 
-import retrofit2.Callback
-
 class ApiHelperImpl(private val apiService: ApiService) : ApiHelper {
 
-    override suspend fun getListProducts(id: String): ProductListDTO {
+    override suspend fun getListProducts(id: String): ProductsListDTO {
         return apiService.getListProducts(id)
     }
 
-    override suspend fun getListCategory(): CategoryListDTO {
+    override suspend fun getListCategory(): CategoriesListDTO {
         return apiService.getListCategory()
     }
 
-    override suspend fun getListVariants(id: String): VariantListDTO {
+    override suspend fun getListVariants(id: String): VariantsListDTO {
         return apiService.getListVariants(id)
+    }
+
+    override suspend fun getVariantIsStock(id: String): ListVariantIsStockDTO {
+        return apiService.getVariantIsStock(id)
     }
 
 }

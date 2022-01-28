@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.geekbrains.shopcatalog.apidata.*
 import ru.geekbrains.shopcatalog.localdata.DatabaseHelper
+import ru.geekbrains.shopcatalog.localdata.entity.FavoriteEntity
 import ru.geekbrains.shopcatalog.localdata.entity.ProductEntity
 import ru.geekbrains.shopcatalog.localdata.entity.ViewedProductsEntity
 import ru.geekbrains.shopcatalog.utils.*
@@ -24,10 +25,14 @@ class DetailsViewModel(
     private val variantsLiveData: MutableLiveData<AppState> = MutableLiveData()
     fun getVariantsLD() = variantsLiveData
 
+    private val stockLiveData: MutableLiveData<AppState> = MutableLiveData()
+    fun getStockLD() = stockLiveData
+
     init {
         fetchDetails()
     }
 
+    //Only HistoryLD
     private fun fetchDetails(){
         viewModelScope.launch {
             historyLiveData.postValue(AppState.Loading)
@@ -50,23 +55,32 @@ class DetailsViewModel(
         detailsLiveData.value = AppState.SuccessProduct(product)
     }
 
-    fun saveHistoryProductToToDB(product: ProductEntity) {
+    fun saveHistoryProductToDB(product: ProductEntity) {
         dbHelper.saveViewedProduct(ViewedProductsEntity(product.id_product))
     }
 
     fun getVariants(id: String){
-        variantsLiveData.postValue(AppState.Loading)
         viewModelScope.launch{
             try {
-                val variants = convertVariantListDtoToEntity(apiHelper.getListVariants(id))
+                variantsLiveData.postValue(AppState.Loading)
+                val apiVariants = apiHelper.getListVariants(id)
+                var resultString = ""
+                apiVariants.rows.forEach {
+                    resultString += "variant=https://online.moysklad.ru/api/remap/1.2/entity/variant/${it.id};"
+                }
+                stockLiveData.postValue(AppState.Loading)
+                val resultStock = apiHelper.getVariantIsStock(resultString)
+                val variants = convertVariantListDtoToEntity(apiVariants, resultStock)
                 variantsLiveData.postValue(AppState.SuccessVariants(variants))
             }catch (e: Exception){
-                variantsLiveData.postValue(AppState.Error(e))
+                variantsLiveData.postValue(AppState.ErrorVariants(e))
             }
         }
     }
 
-    fun insertFavoriteProduct(){
-
+    fun saveFavoriteProductToDB(prod: FavoriteEntity){
+        viewModelScope.launch {
+            dbHelper.saveFavoriteProduct(prod)
+        }
     }
 }

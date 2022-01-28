@@ -11,7 +11,7 @@ import ru.geekbrains.shopcatalog.localdata.entity.ProductEntity
 import ru.geekbrains.shopcatalog.localdata.entity.ViewedProductsEntity
 import ru.geekbrains.shopcatalog.utils.picassoViewHolder
 
-class HistoryViewedAdapter(private var onItemViewClickListener: OnItemViewClickListener?)
+class HistoryViewedAdapter(private var onItemViewClickListener: OnItemViewClickListener)
     : RecyclerView.Adapter<HistoryViewedAdapter.RecyclerItemViewHolder>() {
     private var data: List<ProductEntity> = arrayListOf()
 
@@ -40,13 +40,13 @@ class HistoryViewedAdapter(private var onItemViewClickListener: OnItemViewClickL
             if (layoutPosition != RecyclerView.NO_POSITION) {
                 itemView.apply {
                     findViewById<TextView>(R.id.item_title).text = product.name
-                    findViewById<TextView>(R.id.item_price).text = product.prise
+                    findViewById<TextView>(R.id.item_price).text = product.prise.toString()
                     picassoViewHolder()
                         .load(product.imgMiniature)
                         .placeholder(R.drawable.logo_mini)
                         .into(findViewById<ImageView>(R.id.item_image))
                     setOnClickListener {
-                        onItemViewClickListener?.onItemViewClick(product)
+                        onItemViewClickListener.onItemViewClick(product)
                     }
                 }
             }

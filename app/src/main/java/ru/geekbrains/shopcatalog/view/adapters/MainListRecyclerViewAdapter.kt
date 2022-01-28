@@ -41,7 +41,7 @@ class MainListRecyclerViewAdapter(private var onItemViewClickListener: OnItemVie
         fun bind(product: ProductEntity){
             itemView.apply {
                 findViewById<TextView>(R.id.item_title).text = product.name
-                findViewById<TextView>(R.id.item_price).text = product.prise
+                findViewById<TextView>(R.id.item_price).text = product.prise.toString()
                 picassoViewHolder()
                     .load(product.imgMiniature)
                     .placeholder(R.drawable.logo_mini)

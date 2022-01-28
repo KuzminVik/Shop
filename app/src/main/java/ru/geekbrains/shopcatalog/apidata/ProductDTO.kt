@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ProductListDTO(
+data class ProductsListDTO(
     val rows: List<ProductDTO>
 ): Parcelable
 
@@ -38,6 +38,6 @@ data class SupplierDTO(
 ): Parcelable
 
 @Parcelize
-data class CategoryListDTO(
+data class CategoriesListDTO(
     val rows: List<ProductFolderDTO>
 ): Parcelable

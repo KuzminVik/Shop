@@ -41,8 +41,8 @@ class CategoriesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupUI()
         setupViewModel()
+        setupUI()
         setupObserver()
 
     }
@@ -82,7 +82,6 @@ class CategoriesFragment : Fragment() {
                     binding.recyclerView.visibility = View.GONE
                 }
                 Status.ERROR -> {
-                    //Handle Error
                     binding.progressBar.visibility = View.GONE
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
                 }

@@ -23,7 +23,7 @@ data class ProductEntity(
     @ColumnInfo(name = "imgMiniature") val imgMiniature: String?,
     @ColumnInfo(name = "imgTiny") val imgTiny: String?,
     @ColumnInfo(name = "supplier") val supplier: String?,
-    @ColumnInfo(name = "prise") val prise: String?,
+    @ColumnInfo(name = "prise") val prise: Int?,
     @ColumnInfo(name = "stock") val stock: String?
 ): Parcelable
 
@@ -32,15 +32,17 @@ data class ProductEntity(
 data class VariantEntity(
     @PrimaryKey val id_variant: String,
     @ColumnInfo(name = "size") val size: String?,
+    @ColumnInfo(name = "stock") val stock: String?
 ): Parcelable
 
 @Parcelize
 @Entity
 data class FavoriteEntity(
-    @PrimaryKey val id_product: String,
+    @PrimaryKey(autoGenerate = true) val id: Long,
+    @ColumnInfo(name = "id_product") val id_product: String,
     @ColumnInfo(name = "name") val name: String?,
     @ColumnInfo(name = "imgMiniature") val imgMiniature: String?,
-    @ColumnInfo(name = "prise") val prise: String?,
+    @ColumnInfo(name = "prise") val prise: Int?,
     @ColumnInfo(name = "stock") val stock: String?,
     @ColumnInfo(name = "size") val size: String?
 ): Parcelable

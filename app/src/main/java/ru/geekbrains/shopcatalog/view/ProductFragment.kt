@@ -1,12 +1,9 @@
 package ru.geekbrains.shopcatalog.view
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.GridLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
@@ -18,6 +15,7 @@ import ru.geekbrains.shopcatalog.apidata.ApiService
 import ru.geekbrains.shopcatalog.databinding.ProductFragmentBinding
 import ru.geekbrains.shopcatalog.localdata.DatabaseBuilder
 import ru.geekbrains.shopcatalog.localdata.DatabaseHelperImpl
+import ru.geekbrains.shopcatalog.localdata.entity.FavoriteEntity
 import ru.geekbrains.shopcatalog.localdata.entity.ProductEntity
 import ru.geekbrains.shopcatalog.utils.AppState
 import ru.geekbrains.shopcatalog.utils.picasso
@@ -32,6 +30,7 @@ class ProductFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var productBundle: ProductEntity
     private lateinit var viewModel: DetailsViewModel
+    private lateinit var chipGroup: ChipGroup
 
     companion object {
         const val BUNDLE_EXTRA = "product"
@@ -69,17 +68,10 @@ class ProductFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        chipGroup = binding.sizeLayout
         productBundle = arguments?.getParcelable(BUNDLE_EXTRA) ?: ProductEntity(
-            "0",
-            "0",
-            "0",
-            "0",
-            "0",
-            "0",
-            "0",
-            "0",
-            "0",
-            "0"
+            "0", "0", "0", "0", "0",
+            "0", "0", "0", 0, "0"
         )
         setupViewModel()
         setupObserverHistory()
@@ -154,20 +146,27 @@ class ProductFragment : Fragment() {
         viewModel.getVariantsLD().observe(viewLifecycleOwner, {
             when(it){
                 is AppState.SuccessVariants ->{
-                    val chipGroup = binding.sizeLayout
                     chipGroup.isSingleSelection = false
                     for (index in it.variantsData.indices){
-                        val chip = layoutInflater.inflate(R.layout.single_chip_layout, chipGroup, false) as Chip
-                        chip.isClickable = true
-                        chip.text = it.variantsData[index].size
-                        chipGroup.addView(chip)
+                        if(it.variantsData[index].stock == "0"){
+                            continue
+                        }else{
+                            val chip = layoutInflater.inflate(R.layout.single_chip_layout, chipGroup, false) as Chip
+                            chip.isClickable = true
+                            chip.text = it.variantsData[index].size
+                            chipGroup.addView(chip)
+                            chip.setOnCheckedChangeListener { buttonView, isChecked ->
+                                //CODE TODO
+                            }
+                        }
+
                     }
                 }
                 is AppState.Loading -> {
                     //TODO
                 }
                 is AppState.ErrorVariants ->{
-                    //TODO
+                    //TODO у товара нет размеров!!!
                 }
             }
         })
@@ -177,15 +176,41 @@ class ProductFragment : Fragment() {
     private fun setProduct(product: ProductEntity) {
         picasso()
             .load(product.imgLoad)
+            .placeholder(R.drawable.logo_mini)
             .into(binding.ivFirst)
         binding.tvName.text = product.name
         binding.tvDesc.text = product.description
         binding.supplier.text = product.supplier
-        binding.tvPrice.text = product.prise
+        binding.tvPrice.text = product.prise.toString()
         binding.btnAdd.setOnClickListener {
-            Toast.makeText(context, "Товар добавлен в избранное", Toast.LENGTH_LONG).show()
+            val countChild = chipGroup.childCount
+            //Если чипсы есть, то
+            if(countChild>0){
+                var countIsChecked = 0
+                for(i in 0..countChild){
+                    val child: Chip = chipGroup.getChildAt(i) as? Chip ?: continue
+                    if(!child.isChecked) {
+                        continue
+                    }else{
+                        countIsChecked++
+                        val f = FavoriteEntity(0, product.id_product, product.name, product.imgMiniature, product.prise, product.stock, child.text.toString())
+                        viewModel.saveFavoriteProductToDB(f)
+                        child.isChecked = false
+                    }
+                }
+                if(countIsChecked>0){
+                    Toast.makeText(context, "Товар добавлен в избранное", Toast.LENGTH_LONG).show()
+                }else{
+                    Toast.makeText(context, "Необходимо выбрать размер!", Toast.LENGTH_LONG).show()
+                }
+            //Если чипсов нет, то
+            }else{
+                val f = FavoriteEntity(0, product.id_product, product.name, product.imgMiniature, product.prise, product.stock, "-")
+                viewModel.saveFavoriteProductToDB(f)
+                Toast.makeText(context, "Товар добавлен в избранное", Toast.LENGTH_LONG).show()
+            }
         }
-        viewModel.saveHistoryProductToToDB(product)
+        viewModel.saveHistoryProductToDB(product)
     }
 
     override fun onDestroyView() {

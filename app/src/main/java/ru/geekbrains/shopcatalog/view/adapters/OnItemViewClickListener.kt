@@ -11,3 +11,13 @@ interface OnItemViewClickListener {
 interface OnItemViewClickListenerProducts {
     fun onItemViewClick(id: String)
 }
+
+//Используется в адаптере корзины
+interface OnItemViewClickListenerFavorite{
+    fun onItemViewClick(id: String)
+}
+
+//Используется для удаления в адаптере корзины
+interface OnItemViewClickListenerDelete{
+    fun onItemViewClick(id: Long)
+}
